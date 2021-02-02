@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public GameObject panelLevelCompleted;
     public GameObject panelGameOver;
     public GameObject panelContinue;
+    public GameObject panelControls;
 
     ///////////////////////
 
@@ -64,6 +65,12 @@ public class GameManager : MonoBehaviour
     public void MenuClicked()
     {
         SwitchState(State.MENU);
+    }
+
+    public void ControlsClicked()
+    {
+        panelMenu.SetActive(false);
+        panelControls.SetActive(true);
     }
 
     public void QuitClicked()
@@ -99,6 +106,7 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case State.MENU:
+                panelControls.SetActive(false);
                 _highScore = PlayerPrefs.GetInt("highscore");
                 HSMenuText.text = "Highest Score: " + _highScore;
                 Cursor.visible = true;
