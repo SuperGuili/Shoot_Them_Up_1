@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     private int limitRight = 250;
     private int limitLeft = -250;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -131,15 +132,14 @@ public class Player : MonoBehaviour
 
     void Fire()
     {
-        bullet = ObjectPooler.SharedInstance.GetPooledObject("Bullet");
+        bullet = ObjectPooler.SharedInstance.GetPooledObject("VfxBullet");
         if (bullet != null)
         {
-
             bullet.transform.position = bulletSpawnLeft.transform.position;
             bullet.transform.rotation = bulletSpawnLeft.transform.rotation;
             bullet.SetActive(true);
         }
-        bullet = ObjectPooler.SharedInstance.GetPooledObject("Bullet");
+        bullet = ObjectPooler.SharedInstance.GetPooledObject("VfxBullet");
         if (bullet != null)
         {
             bullet.transform.position = bulletSpawnRight.transform.position;

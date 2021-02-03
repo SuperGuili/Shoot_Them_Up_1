@@ -14,6 +14,9 @@ TagManager:
   - CameraTop
   - Terrain
   - TerrainManager
+  - VfxBullet
+  - VfxFlash
+  - VfxImpact
   layers:
   - Default
   - TransparentFX

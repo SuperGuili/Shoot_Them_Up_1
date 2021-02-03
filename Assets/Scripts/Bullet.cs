@@ -13,6 +13,9 @@ public class Bullet : MonoBehaviour
     private float playerSpeed;
     private float _aliveTime = 20;
 
+    public GameObject muzzle;
+    public GameObject hit;
+
     // Start is called before the first frame update
     private void OnEnable()
     {
@@ -27,7 +30,11 @@ public class Bullet : MonoBehaviour
 
             bullet = GetComponent<Rigidbody>();
             bullet.velocity = transform.up * (movSpeed + playerSpeed);
-            
+            /// Muzzle Flash
+            muzzle = ObjectPooler.SharedInstance.GetPooledObject("VfxFlash");
+            muzzle.transform.position = gameObject.transform.position;
+            muzzle.SetActive(true);
+
         }
         catch (System.Exception)
         {
@@ -50,17 +57,31 @@ public class Bullet : MonoBehaviour
             aliveTime = 20;//_aliveTime;
             gameObject.SetActive(false);
         }
+
     }
 
+    private void HitFx()
+    {
+        hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpact");
+        hit.transform.position = transform.position;
+        hit.transform.rotation = transform.rotation;
+
+        hit.SetActive(true);
+    }
+
+
     private void OnTriggerEnter(Collider other)
-    {       
+    {
+
         if (other.tag == "Enemy")
         {
+            HitFx();
             enemyTriggered = other.gameObject;
             Enemy _enemy = enemyTriggered.GetComponent<Enemy>();
             _enemy.removeHealth(damage);
-            gameObject.SetActive(false);
+            gameObject.SetActive(false);            
         }
 
     }
+
 }

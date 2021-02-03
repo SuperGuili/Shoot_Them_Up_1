@@ -111,8 +111,6 @@ MonoBehaviour:
   aliveTime: 20
   damage: 1
   movSpeed: 100
-  muzzle: {fileID: 3329004667791747996, guid: 42c0a90dac3ce754bbd2e67c6f0fba13, type: 3}
-  hit: {fileID: 2235865065268231578, guid: 9c15ae791f89d7a4c897529fed32c253, type: 3}
 --- !u!54 &-1417014840497576230
 Rigidbody:
   m_ObjectHideFlags: 0
