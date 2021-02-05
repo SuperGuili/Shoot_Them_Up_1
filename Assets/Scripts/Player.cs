@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
     private int limitRight = 250;
     private int limitLeft = -250;
 
+    private GameObject fireFx;
+    private bool firefxOn = true;
+    private Vector3 moveFireFx;
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +34,34 @@ public class Player : MonoBehaviour
         propeller = GameObject.FindGameObjectWithTag("Propeller").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _health = health;
+        //fireFx = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
+        if (health >= 10)
+        {
+            propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
+        }
+        
+        if (health <= 9 && firefxOn)
+        {
+            fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFirePlayer");
+            fireFx.SetActive(true);
+            firefxOn = false;
+        }
+
+        if (!firefxOn)
+        {
+            // Position of the Fire FX
+            moveFireFx = transform.position;
+            moveFireFx.y -= 0.5f;
+            moveFireFx.z += 1.5f;
+            fireFx.transform.position = moveFireFx;
+
+        }
+
 
         if (health <= 0 && isAlive == true)
         {
@@ -167,10 +193,14 @@ public class Player : MonoBehaviour
     {
         health = _health;
         nextFire = 0;
+        firefxOn = true;
+        fireFx.SetActive(false);
     }
 
     public void ResetAll()
     {
+        fireFx.SetActive(false);
+        firefxOn = true;
         health = _health;
         nextFire = 0;
         fireRate = 0.3f;

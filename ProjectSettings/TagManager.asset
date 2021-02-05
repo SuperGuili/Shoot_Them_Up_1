@@ -17,6 +17,8 @@ TagManager:
   - VfxBullet
   - VfxFlash
   - VfxImpact
+  - VfxFire
+  - VfxFirePlayer
   layers:
   - Default
   - TransparentFX

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VfxImpact : MonoBehaviour
 {
-    public float aliveTime = 5;
+    public float aliveTime = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +19,7 @@ public class VfxImpact : MonoBehaviour
         if (aliveTime <= 0)
         {
             /// Impact Vfx Deactivate and reset after use
-            aliveTime = 5;
+            aliveTime = 3;
             gameObject.SetActive(false);
         }
     }

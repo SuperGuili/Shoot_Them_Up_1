@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     private GameObject enemyTriggered;
     private Rigidbody bullet;
     private float playerSpeed;
-    private float _aliveTime = 20;
+    private float _aliveTime = 5;
 
     public GameObject muzzle;
     public GameObject hit;
@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
         {
             //throw;
         }
-        _aliveTime = 20;
+        _aliveTime = 5;
     }
 
     void Start()
@@ -54,7 +54,7 @@ public class Bullet : MonoBehaviour
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
-            aliveTime = 20;//_aliveTime;
+            aliveTime = 5;//_aliveTime;
             gameObject.SetActive(false);
         }
 

@@ -31,7 +31,8 @@ public class ObjectPooler : MonoBehaviour
             for (int i = 0; i < item.amountToPool; i++)
             {
                 GameObject obj = (GameObject)Instantiate(item.objectToPool);
-                if (obj.tag == "VfxBullet" || obj.tag == "BulletEnemy" || obj.tag == "VfxFlash")
+                if (obj.tag == "VfxBullet" || obj.tag == "BulletEnemy" || obj.tag == "VfxFlash" || obj.tag == "VfxMuzzle"
+                    || obj.tag == "VfxImpact" || obj.tag == "VfxFirePlayer") //|| obj.tag == "VfxFire"
                 {
                     Transform Bullets = GameObject.FindGameObjectWithTag("Bullets").transform;
                     obj.transform.SetParent(Bullets);

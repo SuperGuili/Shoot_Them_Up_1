@@ -51,6 +51,8 @@ MonoBehaviour:
   aliveTime: 20
   damage: 1
   movSpeed: 100
+  muzzle: {fileID: 0}
+  hit: {fileID: 0}
 --- !u!54 &-1619574699415250669
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4789,7 +4791,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -9681,7 +9683,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 40b66a88ce9a3794183f3bc97e67cb2a, type: 2}
-  - {fileID: 2100000, guid: 40b66a88ce9a3794183f3bc97e67cb2a, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

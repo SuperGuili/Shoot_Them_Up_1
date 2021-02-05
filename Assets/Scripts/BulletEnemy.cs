@@ -12,7 +12,9 @@ public class BulletEnemy : MonoBehaviour
     GameObject player;
     private Rigidbody bullet;
     private float playerSpeed;
-    private float _aliveTime = 15;
+    private float _aliveTime = 10;
+
+    public GameObject hit;
 
     // Start is called before the first frame update
     private void OnEnable()
@@ -43,16 +45,41 @@ public class BulletEnemy : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        if (!player.gameObject.GetComponent<Player>().isAlive)
+        try
         {
-            gameObject.SetActive(false);
+            if (!player.gameObject.GetComponent<Player>().isAlive)
+            {
+                gameObject.SetActive(false);
+            }
         }
+        catch (System.Exception)
+        {
+
+            //throw;
+        }
+    }
+
+    private void HitFx()
+    {
+        hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpact");
+        hit.transform.position = transform.position;
+        hit.transform.rotation = transform.rotation;
+
+        ParticleSystem scale;
+        for (int i = 0; i < 3; i++)
+        {
+            scale = hit.transform.GetChild(i).GetComponent<ParticleSystem>();
+            scale.transform.localScale /= 2f;
+        }
+
+        hit.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
+            HitFx();
             enemyTriggered = other.gameObject;
             Player _player = enemyTriggered.GetComponent<Player>();
             _player.removeHealth(damage);
