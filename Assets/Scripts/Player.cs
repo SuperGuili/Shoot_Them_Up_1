@@ -27,6 +27,9 @@ public class Player : MonoBehaviour
     private bool firefxOn = true;
     private Vector3 moveFireFx;
 
+    private Vector3 dive;
+    private bool diving = false;
+    private bool corpse = true;
 
     // Start is called before the first frame update
     void Start()
@@ -34,18 +37,22 @@ public class Player : MonoBehaviour
         propeller = GameObject.FindGameObjectWithTag("Propeller").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _health = health;
-        //fireFx = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (health >= 10)
+        if (health >= 4)
         {
-            propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
+            propeller.Rotate(0, 0, 1 * 2000 * Time.deltaTime);
         }
-        
-        if (health <= 9 && firefxOn)
+
+        if (health <= 3)
+        {
+            propeller.Rotate(0, 0, 1 * 500 * Time.deltaTime);
+        }
+
+        if (health <= 2 && firefxOn)
         {
             fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFirePlayer");
             fireFx.SetActive(true);
@@ -60,12 +67,6 @@ public class Player : MonoBehaviour
             moveFireFx.z += 1.5f;
             fireFx.transform.position = moveFireFx;
 
-        }
-
-
-        if (health <= 0 && isAlive == true)
-        {
-            Die();
         }
 
         if (score == 50)
@@ -84,6 +85,7 @@ public class Player : MonoBehaviour
         }
         if (score == 1000)
         {
+            fireRate -= 0.05f;
             lives++;
             level++;
             score += 10;
@@ -94,7 +96,11 @@ public class Player : MonoBehaviour
             nextFire = Time.time + fireRate;
             Fire();
         }
+        
+    }
 
+    private void FixedUpdate()
+    {
         if (score != scoreUpdater || score == 0)
         {
             GameManager.Instance._score = score;
@@ -103,15 +109,47 @@ public class Player : MonoBehaviour
         GameManager.Instance._level = level;
         GameManager.Instance._lives = lives;
         GameManager.Instance._health = health;
-    }
 
-    private void FixedUpdate()
-    {
         float x = 0;
         Vector3 playerPosition = transform.position;
         Vector3 moveVector = new Vector3(x * speed * turnSpeed, 60, speed);
 
-        if (playerPosition.x > -250 && playerPosition.x < 250)
+        if (health <= 0 && isAlive)
+        {
+            if (!diving)
+            {
+                float spin = Random.Range(-20f, 20f);
+                dive = new Vector3(spin, spin, 20);//x - turn right //y - spin clockwise //z - nose down
+                diving = true;
+            }
+            if (transform.position.y > 10)
+            {
+                // Rotate down the player after death             
+                Quaternion deltaRotation = Quaternion.Euler(dive * Time.deltaTime);
+                _rigidbody.MoveRotation(_rigidbody.rotation * deltaRotation);
+                if (dive.x < 0.01f)
+                {
+                    _rigidbody.AddForce(-10, 0, 0); // Add force to turn left
+                }
+                else
+                {
+                    _rigidbody.AddForce(10, 0, 0); // Add force to turn right
+                }
+                _rigidbody.constraints = RigidbodyConstraints.None;
+                _rigidbody.useGravity = true; // Gravity to fall
+
+                if (transform.position.y <= 15) // Under water
+                {
+                    lives--;
+                    GameManager.Instance._lives = lives;
+                    Die();
+                }
+
+                return;
+            }
+        }
+
+        if (playerPosition.x > limitLeft && playerPosition.x < limitRight)
         {
             x = Input.GetAxis("Horizontal"); //Input for X position
         }
@@ -182,8 +220,7 @@ public class Player : MonoBehaviour
     public void Die()
     {
         isAlive = false;
-        lives--;
-        if (lives > 0)
+        if (lives >= 1)
         {
             Reset();
         }
@@ -191,10 +228,21 @@ public class Player : MonoBehaviour
 
     public void Reset()
     {
+        _rigidbody.useGravity = false;
+        _rigidbody.angularVelocity = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 90, 10);
+        transform.position = new Vector3(0, 60, transform.position.z);
+        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+
         health = _health;
         nextFire = 0;
         firefxOn = true;
         fireFx.SetActive(false);
+        
+        dive = Vector3.zero;
+        diving = false;
+        corpse = true;
+        
     }
 
     public void ResetAll()
@@ -210,5 +258,23 @@ public class Player : MonoBehaviour
         scoreUpdater = 0;
         level = 0;
         transform.position = new Vector3(0, 60, 0);
+        _rigidbody.angularVelocity = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 90, 10);
+        _rigidbody.useGravity = false;
+        dive = Vector3.zero;
+        diving = false;
+        corpse = true;
+        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {        
+        if (other.tag == "Terrain")
+        {
+            lives--;
+            GameManager.Instance._lives = lives;
+            Die();
+        }
     }
 }

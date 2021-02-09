@@ -5,13 +5,13 @@ using UnityEngine;
 public class TerrainManager : MonoBehaviour
 {
     private Transform playerTransform;
-    private float spawnZ = -500.0f;
-    private float terrainLenght = 500;
-    private int maxSpawnedTerrains = 5;
+    private float spawnZ = -1000.0f;
+    private float terrainLenght = 1000;
+    private int maxSpawnedTerrains = 2;
 
     private int lastPrefabIndex = 0;
 
-    private float safeZone = 500;
+    private float safeZone = 100;
 
     // Start is called before the first frame update
     void Start()
@@ -22,9 +22,9 @@ public class TerrainManager : MonoBehaviour
 
             for (int i = 0; i < maxSpawnedTerrains; i++)
             {
-                if (i < 2)
-                    Spawnterrain();
-                else
+                //if (i < 2)
+                //    Spawnterrain();
+                //else
                     Spawnterrain();
             }
         }
@@ -67,10 +67,10 @@ public class TerrainManager : MonoBehaviour
 
     public void ResetAll()
     {
-        spawnZ = -500.0f;
-        terrainLenght = 500;
-        maxSpawnedTerrains = 5;
+        spawnZ = -1000.0f;
+        terrainLenght = 1000;
+        maxSpawnedTerrains = 2;
         lastPrefabIndex = 0;
-        safeZone = 500;
+        safeZone = 100;
     }
 }

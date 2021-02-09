@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     private float nextFire = 0;
 
     private Vector3 dive;
-    private bool diving = true;
+    private bool diving = false;
     private bool corpse = true;
     private GameObject fireFx;
 
@@ -29,12 +29,13 @@ public class Enemy : MonoBehaviour
         propeller = transform.Find("PropellerEnemy");
         playerTransform = GameObject.FindGameObjectWithTag("Player");
         rigidbody = gameObject.GetComponent<Rigidbody>();
+        fireFx = null;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        fireFx = null;
+
     }
 
     // Update is called once per frame
@@ -53,16 +54,29 @@ public class Enemy : MonoBehaviour
         if (health <= 0 && gameObject.activeInHierarchy && corpse)
         {
             if (fireFx != null)
-            {
+            {                
                 fireFx.transform.position = transform.position;
             }
-            if (transform.position.y > 25)
+            if (!diving)
             {
-                // Rotate down the nemy after death
-                dive = new Vector3(15, 15, 15);//x - turn right //y - spin clockwise //z - nose down
+                playerTransform.GetComponent<Player>().score += 10;
+                float x = Random.Range(-20f, 20f);
+                dive = new Vector3(x, x, 20);//x - turn right //y - spin clockwise //z - nose down
+                diving = true;
+            }
+            if (transform.position.y > 10)
+            {
+                // Rotate down the nemy after death             
                 Quaternion deltaRotation = Quaternion.Euler(dive * Time.deltaTime);
                 rigidbody.MoveRotation(rigidbody.rotation * deltaRotation);
-                rigidbody.AddForce(-10, 0, 0); // Add force to turn
+                if (dive.x < 0.01f)
+                {
+                    rigidbody.AddForce(10, 0, 0); // Add force to turn right
+                }
+                else
+                {
+                    rigidbody.AddForce(-10, 0, 0); // Add force to turn left
+                }
                 rigidbody.useGravity = true; // Gravity to fall
 
                 // Fire FX
@@ -105,14 +119,6 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        if (health <= 0)
-        {
-            if (playerTransform.GetComponent<Player>().isAlive)
-            {
-                playerTransform.GetComponent<Player>().score += 10;
-            }
-        }
-
         ResetAll();
         gameObject.SetActive(false);
     }
@@ -146,10 +152,10 @@ public class Enemy : MonoBehaviour
             rigidbody.velocity = new Vector3(0, 0, 0);
             rigidbody.angularVelocity = new Vector3(0, 0, 0);
             rigidbody.useGravity = false;
-            if (transform.position.x > -55) // On the water - Flames off
+            if (transform.position.x > -20) // On the water - Flames off
             {
-                fireFx.SetActive(false);
-            }            
+                Die();
+            }
         }
     }
 
@@ -161,7 +167,7 @@ public class Enemy : MonoBehaviour
         fireRate = 1;
         burst = 3;
         nextFire = 0;
-        diving = true;
+        diving = false;
 
         rigidbody.useGravity = false;
         rigidbody.velocity = new Vector3(0, 0, 0);

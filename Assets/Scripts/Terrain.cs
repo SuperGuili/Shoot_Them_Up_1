@@ -27,7 +27,7 @@ public class Terrain : MonoBehaviour
             Start();
             return;
         }
-        if (transform.position.z < playerTransform.position.z -500)
+        if (transform.position.z < playerTransform.position.z -1000)////
         {
             Delete();
         }

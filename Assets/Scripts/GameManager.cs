@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
         {
             case State.MENU:
                 panelControls.SetActive(false);
+                //PlayerPrefs.SetInt("highscore", 0);//Reset the score
                 _highScore = PlayerPrefs.GetInt("highscore");
                 HSMenuText.text = "Highest Score: " + _highScore;
                 Cursor.visible = true;
@@ -124,10 +125,9 @@ public class GameManager : MonoBehaviour
                 SwitchState(State.LOADLEVEL);
                 break;
 
-            case State.PLAY:
+            case State.PLAY:  
+                //cameraTop.SetActive(true);
                 cameraFPV.SetActive(true);
-                cameraFPVCamera.enabled = true;
-                cameraTop.SetActive(true);
                 break;
 
             case State.LEVELCOMPLETED:
@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
                     newHighScoreText.text = ("Congratulations, you have set a new Highest Score!!!");
                     PlayerPrefs.SetInt("highscore", _score);
                 }
-                else
+                else if(_highScore > _score)
                 {
                     newHighScoreText.text = "";
                 }
@@ -252,15 +252,15 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            if (cameraFPVCamera.enabled)
-            {
-                cameraFPVCamera.enabled = false;
-                cameraTopCamera.enabled = true;
+            if (cameraFPVCamera.isActiveAndEnabled)
+            {                
+                cameraFPV.SetActive(false);
+                cameraTop.SetActive(true);
             }
-            else if (cameraTopCamera.enabled)
+            else if (cameraTopCamera.isActiveAndEnabled)
             {
-                cameraFPVCamera.enabled = true;
-                cameraTopCamera.enabled = false;
+                cameraFPV.SetActive(true);
+                cameraTop.SetActive(false);
             }
 
         }
