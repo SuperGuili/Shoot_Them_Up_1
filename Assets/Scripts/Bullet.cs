@@ -14,7 +14,6 @@ public class Bullet : MonoBehaviour
     private float _aliveTime = 5;
 
     public GameObject muzzle;
-    public GameObject hit;
 
     // Start is called before the first frame update
     private void OnEnable()
@@ -60,21 +59,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void HitFx() //Needs to go to enemy.cs
-    {
-        hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpactEnemy");
-        hit.transform.position = transform.position;
-        hit.transform.rotation = transform.rotation;
-        hit.SetActive(true);
-    }
-
-
+    
     private void OnTriggerEnter(Collider other)
     {
 
         if (other.tag == "Enemy")
-        {
-            HitFx();
+        {          
             enemyTriggered = other.gameObject;
             Enemy _enemy = enemyTriggered.GetComponent<Enemy>();
             _enemy.RemoveHealth(damage);

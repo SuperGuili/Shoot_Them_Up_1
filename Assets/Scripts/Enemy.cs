@@ -24,6 +24,8 @@ public class Enemy : MonoBehaviour
     AudioSource audioEngine;
     public AudioClip clipEngine;
 
+    public GameObject hit;
+
     private void OnEnable()
     {
         propeller = transform.Find("PropellerEnemy");
@@ -43,6 +45,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if (hit != null)
+        //{
+        //    hit.transform.position = transform.position;
+        //}        
+
         if (!playerTransform.GetComponent<Player>().isAlive)
         {
             Die();
@@ -58,7 +65,7 @@ public class Enemy : MonoBehaviour
             propeller.Rotate(0, 0, 1 * 500 * Time.deltaTime);
 
             if (fireFx != null)
-            {                
+            {
                 fireFx.transform.position = transform.position;
             }
             if (!diving)
@@ -88,8 +95,8 @@ public class Enemy : MonoBehaviour
                 {
                     fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFire");
                     fireFx.SetActive(true);
-                }                
-            }                
+                }
+            }
             return;
         }
 
@@ -103,7 +110,7 @@ public class Enemy : MonoBehaviour
         if (playerTransform != null && !diving)
         {
             if (transform.position.x - playerTransform.transform.position.x > 0 && transform.position.x
-                - playerTransform.transform.position.x <= 15 && playerTransform.transform.position.z +20 <= transform.position.z)
+                - playerTransform.transform.position.x <= 15 && playerTransform.transform.position.z + 20 <= transform.position.z)
             {
                 if (Time.time > nextFire)
                 {
@@ -164,6 +171,14 @@ public class Enemy : MonoBehaviour
                 Die();
             }
         }
+        if (other.tag == "VfxBullet")
+        {
+            if (playerTransform != null)
+            {
+                HitFx();
+            }
+
+        }
     }
 
     public void ResetAll()
@@ -188,6 +203,24 @@ public class Enemy : MonoBehaviour
         corpse = true;
 
         audioEngine.Stop();
+    }
+
+    private void HitFx()
+    {
+        if (gameObject.activeInHierarchy)
+        {
+            try
+            {
+                hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpactEnemy");
+                hit.transform.position = transform.position;
+                hit.transform.rotation = transform.rotation;
+                hit.SetActive(true);
+            }
+            catch (System.Exception)
+            {
+                //throw;
+            }
+        }
     }
 
 }
