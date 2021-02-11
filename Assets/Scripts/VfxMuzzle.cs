@@ -20,7 +20,14 @@ public class VfxMuzzle : MonoBehaviour
         {
             /// Muzzle Flash Deactivate after use
             aliveTime = 2;
+            Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
+            gameObject.transform.SetParent(VFX);
             gameObject.SetActive(false);
         }
+    }
+
+    private void OnDisable()
+    {
+
     }
 }

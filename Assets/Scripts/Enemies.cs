@@ -15,7 +15,7 @@ public class Enemies : MonoBehaviour
     public bool resetAll = false;
 
     private bool waveEnable = false;
-    private int x = 0, y = 60, z = 400; // Initial Spawn position
+    private float x = 0, y = 59.5f, z = 400; // Initial Spawn position
     private int enemyGap = 25;
 
     private void OnEnable()
@@ -115,7 +115,7 @@ public class Enemies : MonoBehaviour
         wavecounter = 0;
         difficulty = 1;
         waveEnable = false;
-        x = 0; y = 60; z = 400;
+        x = 0; y = 59.5f; z = 400;
         enemyGap = 25;
     }
 }

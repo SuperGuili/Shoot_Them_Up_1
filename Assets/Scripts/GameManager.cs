@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject cameraTop;
     public GameObject cameraFPV;
     public GameObject Bullets;
+    public GameObject mainCamera;
 
     public Text scoreText;
     public Text healthText;
@@ -83,6 +84,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Instance = this;
+        cameraFPV.SetActive(false);
+        cameraTop.SetActive(false);
         SwitchState(State.MENU);
     }
 
@@ -107,7 +110,7 @@ public class GameManager : MonoBehaviour
         {
             case State.MENU:
                 panelControls.SetActive(false);
-                //PlayerPrefs.SetInt("highscore", 0);//Reset the score
+                //PlayerPrefs.SetInt("highscore", 0); //Reset the score
                 _highScore = PlayerPrefs.GetInt("highscore");
                 HSMenuText.text = "Highest Score: " + _highScore;
                 Cursor.visible = true;
@@ -125,8 +128,9 @@ public class GameManager : MonoBehaviour
                 SwitchState(State.LOADLEVEL);
                 break;
 
-            case State.PLAY:  
+            case State.PLAY:
                 //cameraTop.SetActive(true);
+                mainCamera.SetActive(false);
                 cameraFPV.SetActive(true);
                 break;
 
@@ -165,6 +169,7 @@ public class GameManager : MonoBehaviour
                 panelGameOver.SetActive(true);
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(false);
+                mainCamera.SetActive(true);
                 enemies.SetActive(false);
                 terrainManager.SetActive(false);
                 player.SetActive(false);
@@ -198,6 +203,11 @@ public class GameManager : MonoBehaviour
                     player.SetActive(true);
                     enemies.SetActive(true);
                     terrainManager.SetActive(true);
+                    
+                    cameraTop.SetActive(false);
+                    mainCamera.SetActive(false);
+                    cameraFPV.SetActive(true);
+
                     Time.timeScale = 1;
                 }
 
@@ -205,6 +215,9 @@ public class GameManager : MonoBehaviour
                 {
                     if (_lives > 0)
                     {
+                        cameraFPV.SetActive(false);
+                        cameraTop.SetActive(false);
+                        mainCamera.SetActive(true);
                         Cursor.visible = true;
                         panelPlay.SetActive(false);
                         panelContinue.SetActive(true);
@@ -222,6 +235,9 @@ public class GameManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
+                    cameraFPV.SetActive(false);
+                    cameraTop.SetActive(false);
+                    mainCamera.SetActive(true);
                     Cursor.visible = true;
                     panelPlay.SetActive(false);
                     panelContinue.SetActive(true);

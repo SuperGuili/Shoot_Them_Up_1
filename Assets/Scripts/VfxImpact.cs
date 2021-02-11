@@ -9,7 +9,7 @@ public class VfxImpact : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -20,7 +20,14 @@ public class VfxImpact : MonoBehaviour
         {
             /// Impact Vfx Deactivate and reset after use
             aliveTime = 3;
+            Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
+            gameObject.transform.SetParent(VFX);
             gameObject.SetActive(false);
         }
+    }
+
+    private void OnDisable()
+    {
+
     }
 }

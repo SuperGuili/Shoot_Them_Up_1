@@ -19,6 +19,8 @@ TagManager:
   - VfxImpact
   - VfxFire
   - VfxFirePlayer
+  - VFX
+  - VfxImpactEnemy
   layers:
   - Default
   - TransparentFX

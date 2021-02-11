@@ -18,10 +18,10 @@ public class Player : MonoBehaviour
     public int lives = 3;
     public int score = 0;
     private int scoreUpdater = 0;
-    private int level = 0;
+    private int level = 1;
 
-    private int limitRight = 250;
-    private int limitLeft = -250;
+    private int limitRight = 260;
+    private int limitLeft = -260;
 
     private GameObject fireFx;
     private bool firefxOn = true;
@@ -31,25 +31,65 @@ public class Player : MonoBehaviour
     private bool diving = false;
     private bool corpse = true;
 
+    [SerializeField] public AudioClip engine;
+    [SerializeField] public AudioClip gun;
+    [SerializeField] public AudioClip impactSound;
+    private float engineRPMSound = 1.0f;
+    AudioSource soundEngine;
+    AudioSource soundGun;
+    AudioSource soundImpact;
+
+
+    private void OnEnable()
+    {
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         propeller = GameObject.FindGameObjectWithTag("Propeller").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _health = health;
+
+        //Sound Fxs
+        soundEngine = gameObject.AddComponent<AudioSource>();
+        soundEngine.clip = engine;
+        soundEngine.volume = 0.3f;
+        soundEngine.loop = true;
+        soundEngine.Play();
+
+        soundGun = gameObject.AddComponent<AudioSource>();
+        soundGun.clip = gun;
+        soundGun.volume = 0.4f;
+        soundGun.pitch = 1;
+        soundGun.playOnAwake = false;
+
+        soundImpact = gameObject.AddComponent<AudioSource>();
+        soundImpact.clip = impactSound;
+        soundImpact.pitch = 2;
+        soundImpact.playOnAwake = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (health >= 4)
+
+        if (health >= 3)
         {
-            propeller.Rotate(0, 0, 1 * 2000 * Time.deltaTime);
+            propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
         }
 
-        if (health <= 3)
+        if (health <= 2)
         {
             propeller.Rotate(0, 0, 1 * 500 * Time.deltaTime);
+
+            if (engineRPMSound >= 0.5f)
+            {
+                engineRPMSound -= 0.01f;// * Time.deltaTime;
+                soundEngine.pitch = engineRPMSound;
+            }
+
         }
 
         if (health <= 2 && firefxOn)
@@ -64,7 +104,7 @@ public class Player : MonoBehaviour
             // Position of the Fire FX
             moveFireFx = transform.position;
             moveFireFx.y -= 0.5f;
-            moveFireFx.z += 1.5f;
+            moveFireFx.z += 2.0f;
             fireFx.transform.position = moveFireFx;
 
         }
@@ -90,17 +130,11 @@ public class Player : MonoBehaviour
             level++;
             score += 10;
         }
-
-        if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
-        {
-            nextFire = Time.time + fireRate;
-            Fire();
-        }
-        
     }
 
     private void FixedUpdate()
     {
+
         if (score != scoreUpdater || score == 0)
         {
             GameManager.Instance._score = score;
@@ -116,6 +150,12 @@ public class Player : MonoBehaviour
 
         if (health <= 0 && isAlive)
         {
+            if (engineRPMSound >= 0.0f)
+            {
+                engineRPMSound -= 0.1f * Time.deltaTime;
+                soundEngine.pitch = engineRPMSound;
+                //AudioManager.Instance.SetMusicPitch(engineRPMSound);
+            }
             if (!diving)
             {
                 float spin = Random.Range(-20f, 20f);
@@ -147,6 +187,12 @@ public class Player : MonoBehaviour
 
                 return;
             }
+        }
+
+        if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Fire();
         }
 
         if (playerPosition.x > limitLeft && playerPosition.x < limitRight)
@@ -210,9 +256,15 @@ public class Player : MonoBehaviour
             bullet.transform.rotation = bulletSpawnRight.transform.rotation;
             bullet.SetActive(true);
         }
+
+        soundGun.PlayOneShot(gun, 0.3f);
+
+        //AudioManager.Instance.SetSFXVolume(0.4f);
+        //AudioManager.Instance.PlaySFX(gun);
+        //AudioManager.Instance.SetSFXVolume(1f);
     }
 
-    public void removeHealth(int damage)
+    public void RemoveHealth(int damage)
     {
         health -= damage;
     }
@@ -238,11 +290,15 @@ public class Player : MonoBehaviour
         nextFire = 0;
         firefxOn = true;
         fireFx.SetActive(false);
-        
+
         dive = Vector3.zero;
         diving = false;
         corpse = true;
-        
+
+        engineRPMSound = 1.0f;
+        soundEngine.pitch = engineRPMSound;
+        //AudioManager.Instance.SetMusicPitch(engineRPMSound);
+
     }
 
     public void ResetAll()
@@ -266,15 +322,30 @@ public class Player : MonoBehaviour
         corpse = true;
         _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
 
+        engineRPMSound = 1.0f;
+        soundEngine.pitch = engineRPMSound;
+        //AudioManager.Instance.SetMusicPitch(engineRPMSound);
+
     }
 
     private void OnTriggerEnter(Collider other)
-    {        
+    {
         if (other.tag == "Terrain")
         {
             lives--;
             GameManager.Instance._lives = lives;
             Die();
         }
+
+        if (other.tag == "BulletEnemy")
+        {
+            soundImpact.PlayOneShot(impactSound, 0.5f);
+        }
+    }
+
+    private void OnDisable()
+    {
+        soundEngine.Stop();
+        //AudioManager.Instance.StopMusic(engine);
     }
 }

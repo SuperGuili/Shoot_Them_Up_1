@@ -5,7 +5,6 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     private Transform propeller;
-    private Transform enemies;
     private GameObject playerTransform;
     private Rigidbody rigidbody;
 
@@ -13,7 +12,6 @@ public class Enemy : MonoBehaviour
 
     public GameObject bullet;
     public GameObject SpawnCenterEnemy;
-    private GameObject fire;
 
     public float fireRate = 1;
     public int burst = 3;
@@ -22,14 +20,18 @@ public class Enemy : MonoBehaviour
     private Vector3 dive;
     private bool diving = false;
     private bool corpse = true;
-    private GameObject fireFx;
+    private GameObject fireFx = null;
+    AudioSource audioEngine;
+    public AudioClip clipEngine;
 
     private void OnEnable()
     {
         propeller = transform.Find("PropellerEnemy");
         playerTransform = GameObject.FindGameObjectWithTag("Player");
         rigidbody = gameObject.GetComponent<Rigidbody>();
-        fireFx = null;
+        audioEngine = gameObject.GetComponent<AudioSource>();
+        audioEngine.clip = clipEngine;
+        audioEngine.Play(0);
     }
 
     // Start is called before the first frame update
@@ -46,13 +48,15 @@ public class Enemy : MonoBehaviour
             Die();
         }
 
-        if (playerTransform.transform.position.z > transform.position.z)
+        if (playerTransform.transform.position.z - 100 > transform.position.z)
         {
             Die();
         }
 
         if (health <= 0 && gameObject.activeInHierarchy && corpse)
         {
+            propeller.Rotate(0, 0, 1 * 500 * Time.deltaTime);
+
             if (fireFx != null)
             {                
                 fireFx.transform.position = transform.position;
@@ -84,20 +88,22 @@ public class Enemy : MonoBehaviour
                 {
                     fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFire");
                     fireFx.SetActive(true);
-                }
-                return;
-            }
-
+                }                
+            }                
+            return;
         }
+
+
         if (health >= 1)
         {
             propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
         }
 
 
-        if (playerTransform != null && playerTransform.activeInHierarchy)
+        if (playerTransform != null && !diving)
         {
-            if (transform.position.x - playerTransform.transform.position.x > 0 && transform.position.x - playerTransform.transform.position.x <= 15)
+            if (transform.position.x - playerTransform.transform.position.x > 0 && transform.position.x
+                - playerTransform.transform.position.x <= 15 && playerTransform.transform.position.z +20 <= transform.position.z)
             {
                 if (Time.time > nextFire)
                 {
@@ -105,7 +111,8 @@ public class Enemy : MonoBehaviour
                     Invoke("Fire", 0.1f);
                 }
             }
-            if (transform.position.x - playerTransform.transform.position.x < 0 && transform.position.x - playerTransform.transform.position.x >= -15)
+            if (transform.position.x - playerTransform.transform.position.x < 0 && transform.position.x
+                - playerTransform.transform.position.x >= -15 && playerTransform.transform.position.z + 20 <= transform.position.z)
             {
                 if (Time.time > nextFire)
                 {
@@ -123,7 +130,7 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void removeHealth(int damage)
+    public void RemoveHealth(int damage)
     {
         health -= damage;
     }
@@ -179,6 +186,8 @@ public class Enemy : MonoBehaviour
         }
         fireFx = null;
         corpse = true;
+
+        audioEngine.Stop();
     }
 
 }

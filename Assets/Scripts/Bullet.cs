@@ -32,6 +32,7 @@ public class Bullet : MonoBehaviour
             bullet.velocity = transform.up * (movSpeed + playerSpeed);
             /// Muzzle Flash
             muzzle = ObjectPooler.SharedInstance.GetPooledObject("VfxFlash");
+            muzzle.transform.SetParent(player.transform);
             muzzle.transform.position = gameObject.transform.position;
             muzzle.SetActive(true);
 
@@ -57,15 +58,13 @@ public class Bullet : MonoBehaviour
             aliveTime = 5;//_aliveTime;
             gameObject.SetActive(false);
         }
-
     }
 
-    private void HitFx()
+    private void HitFx() //Needs to go to enemy.cs
     {
-        hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpact");
+        hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpactEnemy");
         hit.transform.position = transform.position;
         hit.transform.rotation = transform.rotation;
-
         hit.SetActive(true);
     }
 
@@ -78,7 +77,7 @@ public class Bullet : MonoBehaviour
             HitFx();
             enemyTriggered = other.gameObject;
             Enemy _enemy = enemyTriggered.GetComponent<Enemy>();
-            _enemy.removeHealth(damage);
+            _enemy.RemoveHealth(damage);
             gameObject.SetActive(false);            
         }
 

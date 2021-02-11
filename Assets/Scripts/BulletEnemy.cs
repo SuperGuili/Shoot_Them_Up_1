@@ -14,7 +14,11 @@ public class BulletEnemy : MonoBehaviour
     private float playerSpeed;
     private float _aliveTime = 10;
 
-    public GameObject hit;
+    public GameObject hit = null;
+    private bool soundFx = true;
+    private bool hitPosition = false;
+
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     private void OnEnable()
@@ -26,8 +30,10 @@ public class BulletEnemy : MonoBehaviour
         }
         bullet = GetComponent<Rigidbody>();
         bullet.velocity = transform.up * (movSpeed + playerSpeed);
-
-        //_aliveTime = aliveTime;
+        bullet.transform.rotation = Quaternion.Euler(0, 0, 0);
+        soundFx = true;
+        hitPosition = false;
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -38,6 +44,11 @@ public class BulletEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (player == null)
+        {
+            gameObject.SetActive(false);
+        }
+
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
@@ -45,33 +56,28 @@ public class BulletEnemy : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        try
+        if (player != null && gameObject.activeInHierarchy)
         {
-            if (!player.gameObject.GetComponent<Player>().isAlive)
+            if (transform.position.z - player.transform.position.z <= 10 && soundFx)
             {
-                gameObject.SetActive(false);
+                audioSource.PlayOneShot(audioSource.clip, 1);
+                soundFx = false;
             }
-        }
-        catch (System.Exception)
-        {
-
-            //throw;
         }
     }
 
     private void HitFx()
     {
         hit = ObjectPooler.SharedInstance.GetPooledObject("VfxImpact");
+        hit.transform.SetParent(player.transform);
         hit.transform.position = transform.position;
         hit.transform.rotation = transform.rotation;
-
         ParticleSystem scale;
         for (int i = 0; i < 3; i++)
         {
             scale = hit.transform.GetChild(i).GetComponent<ParticleSystem>();
-            scale.transform.localScale /= 2f;
+            scale.transform.localScale /= 3f;
         }
-
         hit.SetActive(true);
     }
 
@@ -82,7 +88,7 @@ public class BulletEnemy : MonoBehaviour
             HitFx();
             enemyTriggered = other.gameObject;
             Player _player = enemyTriggered.GetComponent<Player>();
-            _player.removeHealth(damage);
+            _player.RemoveHealth(damage);
             gameObject.SetActive(false);
         }
     }
