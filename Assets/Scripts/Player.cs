@@ -38,12 +38,7 @@ public class Player : MonoBehaviour
     AudioSource soundEngine;
     AudioSource soundGun;
     AudioSource soundImpact;
-
-
-    private void OnEnable()
-    {
-        
-    }
+    GameObject farCloud;
 
     // Start is called before the first frame update
     void Start()
@@ -69,12 +64,12 @@ public class Player : MonoBehaviour
         soundImpact.clip = impactSound;
         soundImpact.pitch = 2;
         soundImpact.playOnAwake = false;
-    }
 
+        farCloud = GameObject.FindGameObjectWithTag("Steam");
+    }
     // Update is called once per frame
     void Update()
     {
-
         if (health >= 3)
         {
             propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
@@ -89,7 +84,6 @@ public class Player : MonoBehaviour
                 engineRPMSound -= 0.01f;// * Time.deltaTime;
                 soundEngine.pitch = engineRPMSound;
             }
-
         }
 
         if (health <= 2 && firefxOn)
@@ -106,7 +100,6 @@ public class Player : MonoBehaviour
             moveFireFx.y -= 0.5f;
             moveFireFx.z += 2.0f;
             fireFx.transform.position = moveFireFx;
-
         }
 
         if (score == 50)
@@ -131,10 +124,8 @@ public class Player : MonoBehaviour
             score += 10;
         }
     }
-
     private void FixedUpdate()
     {
-
         if (score != scoreUpdater || score == 0)
         {
             GameManager.Instance._score = score;
@@ -154,7 +145,6 @@ public class Player : MonoBehaviour
             {
                 engineRPMSound -= 0.1f * Time.deltaTime;
                 soundEngine.pitch = engineRPMSound;
-                //AudioManager.Instance.SetMusicPitch(engineRPMSound);
             }
             if (!diving)
             {
@@ -185,6 +175,9 @@ public class Player : MonoBehaviour
                     Die();
                 }
 
+                //Control the cloud attached to the player
+                farCloud.transform.rotation = Quaternion.Euler(0, 90.0f, 0.00f);
+                farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);
                 return;
             }
         }
@@ -238,8 +231,11 @@ public class Player : MonoBehaviour
         {
             _rigidbody.transform.Rotate(0.5f, 0, 0);
         }
-    }
 
+        //Control the cloud attached to the player
+        farCloud.transform.rotation = Quaternion.Euler(0, 90.0f, 0.00f);
+        farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);        
+    }
     void Fire()
     {
         bullet = ObjectPooler.SharedInstance.GetPooledObject("VfxBullet");
@@ -256,19 +252,12 @@ public class Player : MonoBehaviour
             bullet.transform.rotation = bulletSpawnRight.transform.rotation;
             bullet.SetActive(true);
         }
-
         soundGun.PlayOneShot(gun, 0.3f);
-
-        //AudioManager.Instance.SetSFXVolume(0.4f);
-        //AudioManager.Instance.PlaySFX(gun);
-        //AudioManager.Instance.SetSFXVolume(1f);
     }
-
     public void RemoveHealth(int damage)
     {
         health -= damage;
     }
-
     public void Die()
     {
         isAlive = false;
@@ -277,7 +266,6 @@ public class Player : MonoBehaviour
             Reset();
         }
     }
-
     public void Reset()
     {
         _rigidbody.useGravity = false;
@@ -297,10 +285,7 @@ public class Player : MonoBehaviour
 
         engineRPMSound = 1.0f;
         soundEngine.pitch = engineRPMSound;
-        //AudioManager.Instance.SetMusicPitch(engineRPMSound);
-
     }
-
     public void ResetAll()
     {
         fireFx.SetActive(false);
@@ -324,10 +309,7 @@ public class Player : MonoBehaviour
 
         engineRPMSound = 1.0f;
         soundEngine.pitch = engineRPMSound;
-        //AudioManager.Instance.SetMusicPitch(engineRPMSound);
-
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Terrain")
@@ -342,10 +324,8 @@ public class Player : MonoBehaviour
             soundImpact.PlayOneShot(impactSound, 0.5f);
         }
     }
-
     private void OnDisable()
     {
         soundEngine.Stop();
-        //AudioManager.Instance.StopMusic(engine);
     }
 }

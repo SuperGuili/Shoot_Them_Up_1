@@ -25,9 +25,4 @@ public class VfxMuzzle : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-
-    private void OnDisable()
-    {
-
-    }
 }

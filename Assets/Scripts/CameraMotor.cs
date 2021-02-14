@@ -28,7 +28,6 @@ public class CameraMotor : MonoBehaviour
         //moveVector.x = 0;
         moveVector.y = Mathf.Clamp(moveVector.y, 0, 65);
 
-
         if (transition > 1.0f)
         {
             transform.Rotate(0, 0, 0);    //rotation = lookAt.rotation;
@@ -40,7 +39,6 @@ public class CameraMotor : MonoBehaviour
             transform.position = Vector3.Lerp(moveVector + animationOffset, moveVector, transition);
             transition += Time.deltaTime * 1 / animationDuration;
             transform.LookAt(lookAt.position + new Vector3(0, 5, 0));
-
         }
     }
 }

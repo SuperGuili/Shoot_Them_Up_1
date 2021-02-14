@@ -8,7 +8,6 @@ public class ObjectPoolItem
     public GameObject objectToPool;
     public int amountToPool;
     public bool shouldExpand;
-
 }
 public class ObjectPooler : MonoBehaviour
 {
@@ -63,7 +62,6 @@ public class ObjectPooler : MonoBehaviour
     {
 
     }
-
     public GameObject GetPooledObject(string tag)
     {
         //1

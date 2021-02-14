@@ -21,6 +21,7 @@ TagManager:
   - VfxFirePlayer
   - VFX
   - VfxImpactEnemy
+  - Steam
   layers:
   - Default
   - TransparentFX

@@ -34,7 +34,6 @@ public class Bullet : MonoBehaviour
             muzzle.transform.SetParent(player.transform);
             muzzle.transform.position = gameObject.transform.position;
             muzzle.SetActive(true);
-
         }
         catch (System.Exception)
         {
@@ -58,11 +57,9 @@ public class Bullet : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-
     
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.tag == "Enemy")
         {          
             enemyTriggered = other.gameObject;
@@ -70,7 +67,5 @@ public class Bullet : MonoBehaviour
             _enemy.RemoveHealth(damage);
             gameObject.SetActive(false);            
         }
-
     }
-
 }

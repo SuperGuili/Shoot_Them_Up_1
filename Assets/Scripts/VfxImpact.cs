@@ -25,9 +25,4 @@ public class VfxImpact : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-
-    private void OnDisable()
-    {
-
-    }
 }

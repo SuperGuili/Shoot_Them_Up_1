@@ -28,7 +28,6 @@ public class Enemies : MonoBehaviour
     {
 
     }
-
     void Update()
     {
         if (player == null)

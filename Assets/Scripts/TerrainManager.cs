@@ -7,7 +7,7 @@ public class TerrainManager : MonoBehaviour
     private Transform playerTransform;
     private float spawnZ = -1000.0f;
     private float terrainLenght = 1000;
-    private int maxSpawnedTerrains = 2;
+    private int maxSpawnedTerrains = 3;
 
     private int lastPrefabIndex = 0;
 
@@ -53,7 +53,6 @@ public class TerrainManager : MonoBehaviour
         {
 
         }
-
     }
 
     private void Spawnterrain()
@@ -69,7 +68,7 @@ public class TerrainManager : MonoBehaviour
     {
         spawnZ = -1000.0f;
         terrainLenght = 1000;
-        maxSpawnedTerrains = 2;
+        maxSpawnedTerrains = 3;
         lastPrefabIndex = 0;
         safeZone = 100;
     }

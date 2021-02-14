@@ -15,8 +15,7 @@ public class Terrain : MonoBehaviour
         catch (System.Exception)
         {
 
-        }
-        
+        }        
     }
 
     // Update is called once per frame
@@ -32,7 +31,6 @@ public class Terrain : MonoBehaviour
             Delete();
         }
     }
-
     public void Delete()
     {
         gameObject.SetActive(false);

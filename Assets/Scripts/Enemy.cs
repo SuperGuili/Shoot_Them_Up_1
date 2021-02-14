@@ -100,12 +100,10 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-
         if (health >= 1)
         {
             propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
         }
-
 
         if (playerTransform != null && !diving)
         {
@@ -128,7 +126,6 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-
     }
 
     public void Die()
@@ -177,7 +174,6 @@ public class Enemy : MonoBehaviour
             {
                 HitFx();
             }
-
         }
     }
 
@@ -204,7 +200,6 @@ public class Enemy : MonoBehaviour
 
         audioEngine.Stop();
     }
-
     private void HitFx()
     {
         if (gameObject.activeInHierarchy)
@@ -222,5 +217,4 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
 }
