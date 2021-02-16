@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public Text continueText;
     public Text HSMenuText;
     public Text newHighScoreText;
+    public Text modeSelectedText;
+    public Text gameModePlayText;
 
     public Camera cameraTopCamera;
     public Camera cameraFPVCamera;
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
     public GameObject panelGameOver;
     public GameObject panelContinue;
     public GameObject panelControls;
+    public GameObject panelOptions;
 
     ///////////////////////
 
@@ -44,6 +47,8 @@ public class GameManager : MonoBehaviour
     public int _highScore;
     public bool _isAlive;
     public bool gameIsOver;
+    public string gameMode;
+    public int _ammoQuantity;
 
     ///////////////////////
 
@@ -75,6 +80,23 @@ public class GameManager : MonoBehaviour
         panelControls.SetActive(true);
     }
 
+    public void OptionsClicked()
+    {
+        panelMenu.SetActive(false);
+        panelOptions.SetActive(true);
+        modeSelectedText.text = "Game Mode: " + gameMode.ToString();
+    }
+    public void NormalModeClicked()
+    {
+        gameMode = "normal";
+        modeSelectedText.text = "Game Mode: " + gameMode.ToString();
+    }
+    public void HardModeClicked()
+    {
+        gameMode = "hard";
+        modeSelectedText.text = "Game Mode: " + gameMode.ToString();
+    }
+
     public void QuitClicked()
     {
         Debug.Log("quitClicked");
@@ -88,6 +110,8 @@ public class GameManager : MonoBehaviour
         cameraFPV.SetActive(false);
         cameraTop.SetActive(false);
         gameIsOver = false;
+        gameMode = "normal";
+        _ammoQuantity = 0;
         SwitchState(State.MENU);
     }
 
@@ -112,6 +136,7 @@ public class GameManager : MonoBehaviour
         {
             case State.MENU:
                 panelControls.SetActive(false);
+                panelOptions.SetActive(false);
                 //PlayerPrefs.SetInt("highscore", 0); //Reset the score
                 _highScore = PlayerPrefs.GetInt("highscore");
                 HSMenuText.text = "Highest Score: " + _highScore;
@@ -121,8 +146,6 @@ public class GameManager : MonoBehaviour
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(false);
                 player.SetActive(false);
-                //enemies.SetActive(false);
-                //terrainManager.SetActive(false);
                 break;
 
             case State.INIT:
@@ -132,9 +155,17 @@ public class GameManager : MonoBehaviour
                 break;
 
             case State.PLAY:
-                //cameraTop.SetActive(true);
+
                 mainCamera.SetActive(false);
                 cameraFPV.SetActive(true);
+                if (gameMode == "normal")
+                {
+                    gameModePlayText.text = "Mode: " + gameMode.ToString();
+                }
+                else if (gameMode == "hard")
+                {
+                    gameModePlayText.text = "Ammo: " + _ammoQuantity;
+                }
                 break;
 
             case State.LEVELCOMPLETED:
@@ -147,9 +178,6 @@ public class GameManager : MonoBehaviour
                 highScoreText.text = "Highest Score: " + _highScore;
                 panelPlay.SetActive(true);
                 player.SetActive(true);
-                //enemies.SetActive(true);
-                //terrainManager.SetActive(true);
-
 
                 SwitchState(State.PLAY);
 
@@ -175,12 +203,9 @@ public class GameManager : MonoBehaviour
                 cameraTop.SetActive(false);
                 mainCamera.SetActive(true);
                 enemies.GetComponent<Enemies>().ResetAll();
-                //enemies.SetActive(false);
                 terrainManager.GetComponent<TerrainManager>().ResetAll();
-                //terrainManager.SetActive(false);
                 player.GetComponent<Player>().ResetAll();
                 player.SetActive(false);
-                
 
                 break;
 
@@ -207,8 +232,6 @@ public class GameManager : MonoBehaviour
                     panelContinue.SetActive(false);
                     panelPlay.SetActive(true);
                     player.SetActive(true);
-                    //enemies.SetActive(true);
-                    //terrainManager.SetActive(true);
 
                     cameraTop.SetActive(false);
                     mainCamera.SetActive(false);
@@ -227,8 +250,6 @@ public class GameManager : MonoBehaviour
                         Cursor.visible = true;
                         panelPlay.SetActive(false);
                         panelContinue.SetActive(true);
-                        //enemies.SetActive(false);
-                        //terrainManager.SetActive(false);
                         player.SetActive(false);
 
                         continueText.text = "Lifes Left: " + (_lives).ToString();
@@ -248,8 +269,6 @@ public class GameManager : MonoBehaviour
                     Cursor.visible = true;
                     panelPlay.SetActive(false);
                     panelContinue.SetActive(true);
-                    //enemies.SetActive(false);
-                    //terrainManager.SetActive(false);
                     player.SetActive(false);
                     continueText.text = "Lifes Left: " + (_lives).ToString();
                     //pause
@@ -295,6 +314,18 @@ public class GameManager : MonoBehaviour
             livesText.text = "Lives: " + _lives.ToString();
             levelText.text = "Level: " + _level.ToString();
             healthText.text = "Health: " + _health.ToString();
+
+            if (gameMode == "hard")
+            {
+                if (_ammoQuantity > 0)
+                {
+                    gameModePlayText.text = "Ammo: " + _ammoQuantity;
+                }
+                if (_ammoQuantity <= 0)
+                {
+                    gameModePlayText.text = "OUT OF AMMO";
+                }
+            }
         }
 
     }

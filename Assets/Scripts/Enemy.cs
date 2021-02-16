@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     private Transform propeller;
-    private GameObject playerTransform;
+    private GameObject player;
     private Rigidbody rigidbody;
 
     public float health;
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         propeller = transform.Find("PropellerEnemy");
-        playerTransform = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player");
         rigidbody = gameObject.GetComponent<Rigidbody>();
         audioEngine = gameObject.GetComponent<AudioSource>();
         audioEngine.clip = clipEngine;
@@ -45,13 +45,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-                //////////////////////////////////
-        if (!playerTransform.activeSelf && transform.position.z < playerTransform.transform.position.z + 50)
+        //////////////////////////////////
+        if (!player.activeSelf && transform.position.z < player.transform.position.z + 50)
         {
             Die();
         }
 
-        if (playerTransform.transform.position.z - 50 > transform.position.z)
+        if (player.transform.position.z - 50 > transform.position.z)
         {
             Die();
         }
@@ -66,7 +66,12 @@ public class Enemy : MonoBehaviour
             }
             if (!diving)
             {
-                playerTransform.GetComponent<Player>().score += 10;
+                player.GetComponent<Player>().score += 10;
+                if (player.GetComponent<Player>().gameMode == "hard")
+                {
+                    player.GetComponent<Player>()._ammoQuantity += 10;
+                }
+
                 float x = Random.Range(-20f, 20f);
                 dive = new Vector3(x, x, 20);//x - turn right //y - spin clockwise //z - nose down
                 diving = true;
@@ -101,10 +106,10 @@ public class Enemy : MonoBehaviour
             propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
         }
 
-        if (playerTransform != null && !diving)
+        if (player != null && !diving)
         {
-            if (transform.position.x - playerTransform.transform.position.x > 0 && transform.position.x
-                - playerTransform.transform.position.x <= 15 && playerTransform.transform.position.z + 20 <= transform.position.z)
+            if (transform.position.x - player.transform.position.x > 0 && transform.position.x
+                - player.transform.position.x <= 15 && player.transform.position.z + 20 <= transform.position.z)
             {
                 if (Time.time > nextFire)
                 {
@@ -112,8 +117,8 @@ public class Enemy : MonoBehaviour
                     Invoke("Fire", 0.1f);
                 }
             }
-            if (transform.position.x - playerTransform.transform.position.x < 0 && transform.position.x
-                - playerTransform.transform.position.x >= -15 && playerTransform.transform.position.z + 20 <= transform.position.z)
+            if (transform.position.x - player.transform.position.x < 0 && transform.position.x
+                - player.transform.position.x >= -15 && player.transform.position.z + 20 <= transform.position.z)
             {
                 if (Time.time > nextFire)
                 {
@@ -126,6 +131,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+
         ResetAll();
         gameObject.SetActive(false);
     }
@@ -150,7 +156,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            playerTransform.GetComponent<Player>().health -= 2;
+            player.GetComponent<Player>().health -= 2;
             gameObject.SetActive(false);
         }
         if (other.tag == "Terrain")
@@ -166,7 +172,7 @@ public class Enemy : MonoBehaviour
         }
         if (other.tag == "VfxBullet")
         {
-            if (playerTransform != null)
+            if (player != null)
             {
                 HitFx();
             }
@@ -196,7 +202,7 @@ public class Enemy : MonoBehaviour
         if (hit != null)
         {
             hit.SetActive(false);
-        }        
+        }
 
         audioEngine.Stop();
     }

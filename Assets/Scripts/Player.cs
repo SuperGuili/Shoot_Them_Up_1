@@ -42,6 +42,9 @@ public class Player : MonoBehaviour
     AudioSource soundImpact;
     GameObject farCloud;
 
+    public string gameMode;
+    public int _ammoQuantity;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +71,9 @@ public class Player : MonoBehaviour
         soundImpact.playOnAwake = false;
 
         farCloud = GameObject.FindGameObjectWithTag("Steam");
+
+        gameMode = GameManager.Instance.gameMode;
+        _ammoQuantity = 1000;
     }
     // Update is called once per frame
     void Update()
@@ -136,6 +142,7 @@ public class Player : MonoBehaviour
         GameManager.Instance._level = level;
         GameManager.Instance._lives = lives;
         GameManager.Instance._health = health;
+        GameManager.Instance._ammoQuantity = _ammoQuantity;
 
         float x = 0;
         Vector3 playerPosition = transform.position;
@@ -172,7 +179,7 @@ public class Player : MonoBehaviour
 
                 //slow the proppeler                
                 propeller.Rotate(0, 0, 1 * prop * Time.deltaTime);
-                prop -=  2 * Time.deltaTime;
+                prop -= 2 * Time.deltaTime;
 
                 if (transform.position.y <= 15) // Under water
                 {
@@ -240,7 +247,19 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
-            Fire();
+            if (gameMode != "hard")
+            {
+                Fire();
+            }
+            else if (gameMode == "hard" && _ammoQuantity > 0)
+            {
+                Fire();
+                GameManager.Instance._ammoQuantity = _ammoQuantity;
+            }
+            else
+            {
+
+            }
         }
     }
     void Fire()
@@ -260,6 +279,11 @@ public class Player : MonoBehaviour
             bullet.SetActive(true);
         }
         soundGun.PlayOneShot(gun, 0.3f);
+
+        if (gameMode == "hard")
+        {
+            _ammoQuantity -= 2;
+        }
     }
     public void RemoveHealth(int damage)
     {
@@ -324,6 +348,9 @@ public class Player : MonoBehaviour
         prop = 500;
 
         GameManager.Instance._isAlive = true;
+
+        gameMode = GameManager.Instance.gameMode;
+        _ammoQuantity = 1000;
     }
     private void OnTriggerEnter(Collider other)
     {

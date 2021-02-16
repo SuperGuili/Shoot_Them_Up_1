@@ -81,11 +81,11 @@ public class PlayerIntro : MonoBehaviour
     {
         bullet = Instantiate(bullet, bulletSpawnLeft.transform.position, bulletSpawnLeft.transform.rotation);
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
-        rb.velocity = new Vector3(0, 0, 100);
+        rb.velocity = new Vector3(0, 0, 150);
 
         bullet = Instantiate(bullet, bulletSpawnRight.transform.position, bulletSpawnRight.transform.rotation);
         rb = bullet.GetComponent<Rigidbody>();
-        rb.velocity = new Vector3(0, 0, 100);
+        rb.velocity = new Vector3(0, 0, 150);
 
         soundGun.PlayOneShot(gun, 0.3f);
     }
