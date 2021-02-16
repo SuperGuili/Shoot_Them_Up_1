@@ -42,9 +42,10 @@ public class GameManager : MonoBehaviour
     public int _level;
     public int _lives;
     public int _highScore;
+    public bool _isAlive;
+    public bool gameIsOver;
 
     ///////////////////////
-
 
     bool _isSwitchingState;
 
@@ -86,6 +87,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         cameraFPV.SetActive(false);
         cameraTop.SetActive(false);
+        gameIsOver = false;
         SwitchState(State.MENU);
     }
 
@@ -119,12 +121,13 @@ public class GameManager : MonoBehaviour
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(false);
                 player.SetActive(false);
-                enemies.SetActive(false);
-                terrainManager.SetActive(false);
+                //enemies.SetActive(false);
+                //terrainManager.SetActive(false);
                 break;
 
             case State.INIT:
-
+                gameIsOver = false;
+                _isAlive = true;
                 SwitchState(State.LOADLEVEL);
                 break;
 
@@ -144,8 +147,8 @@ public class GameManager : MonoBehaviour
                 highScoreText.text = "Highest Score: " + _highScore;
                 panelPlay.SetActive(true);
                 player.SetActive(true);
-                enemies.SetActive(true);
-                terrainManager.SetActive(true);
+                //enemies.SetActive(true);
+                //terrainManager.SetActive(true);
 
 
                 SwitchState(State.PLAY);
@@ -153,6 +156,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case State.GAMEOVER:
+                gameIsOver = true;
                 _highScore = PlayerPrefs.GetInt("highscore");
                 Cursor.visible = true;
                 if (_score > _highScore)
@@ -160,7 +164,7 @@ public class GameManager : MonoBehaviour
                     newHighScoreText.text = ("Congratulations, you have set a new Highest Score!!!");
                     PlayerPrefs.SetInt("highscore", _score);
                 }
-                else if(_highScore > _score)
+                else if (_highScore > _score)
                 {
                     newHighScoreText.text = "";
                 }
@@ -170,12 +174,14 @@ public class GameManager : MonoBehaviour
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(false);
                 mainCamera.SetActive(true);
-                enemies.SetActive(false);
-                terrainManager.SetActive(false);
-                player.SetActive(false);
-                player.GetComponent<Player>().ResetAll();
                 enemies.GetComponent<Enemies>().ResetAll();
+                //enemies.SetActive(false);
                 terrainManager.GetComponent<TerrainManager>().ResetAll();
+                //terrainManager.SetActive(false);
+                player.GetComponent<Player>().ResetAll();
+                player.SetActive(false);
+                
+
                 break;
 
             default:
@@ -201,9 +207,9 @@ public class GameManager : MonoBehaviour
                     panelContinue.SetActive(false);
                     panelPlay.SetActive(true);
                     player.SetActive(true);
-                    enemies.SetActive(true);
-                    terrainManager.SetActive(true);
-                    
+                    //enemies.SetActive(true);
+                    //terrainManager.SetActive(true);
+
                     cameraTop.SetActive(false);
                     mainCamera.SetActive(false);
                     cameraFPV.SetActive(true);
@@ -221,9 +227,10 @@ public class GameManager : MonoBehaviour
                         Cursor.visible = true;
                         panelPlay.SetActive(false);
                         panelContinue.SetActive(true);
-                        enemies.SetActive(false);
-                        terrainManager.SetActive(false);
+                        //enemies.SetActive(false);
+                        //terrainManager.SetActive(false);
                         player.SetActive(false);
+
                         continueText.text = "Lifes Left: " + (_lives).ToString();
                         //pause
                         Time.timeScale = 0;
@@ -241,8 +248,8 @@ public class GameManager : MonoBehaviour
                     Cursor.visible = true;
                     panelPlay.SetActive(false);
                     panelContinue.SetActive(true);
-                    enemies.SetActive(false);
-                    terrainManager.SetActive(false);
+                    //enemies.SetActive(false);
+                    //terrainManager.SetActive(false);
                     player.SetActive(false);
                     continueText.text = "Lifes Left: " + (_lives).ToString();
                     //pause
@@ -269,7 +276,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             if (cameraFPVCamera.isActiveAndEnabled)
-            {                
+            {
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(true);
             }

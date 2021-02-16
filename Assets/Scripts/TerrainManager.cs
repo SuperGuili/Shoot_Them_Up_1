@@ -4,49 +4,74 @@ using UnityEngine;
 
 public class TerrainManager : MonoBehaviour
 {
-    private Transform playerTransform;
-    private float spawnZ = -1000.0f;
+    private GameObject player;
+    private float spawnZ = 0;
     private float terrainLenght = 1000;
     private int maxSpawnedTerrains = 3;
 
-    private int lastPrefabIndex = 0;
+    public List<GameObject> activeTerrains;
 
-    private float safeZone = 100;
 
     // Start is called before the first frame update
     void Start()
     {
         try
         {
-            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-
-            for (int i = 0; i < maxSpawnedTerrains; i++)
-            {
-                //if (i < 2)
-                //    Spawnterrain();
-                //else
-                    Spawnterrain();
-            }
+            player = GameObject.FindGameObjectWithTag("Player");
         }
         catch (System.Exception)
         {
 
         }
+        activeTerrains = new List<GameObject>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerTransform == null)
+        if (player == null)
         {
             Start();
+            return;
+        }
+
+        if (activeTerrains.Count < maxSpawnedTerrains && player.activeInHierarchy)
+        {
+            Spawnterrain();
+        }
+
+        if (!player.activeInHierarchy)
+        {
+            for (int i = 0; i < activeTerrains.Count; i++)
+            {
+                GameObject go = activeTerrains[i];
+                go.SetActive(false);
+                //activeTerrains.RemoveAt(i);
+            }
+        }
+        if (player.activeInHierarchy)
+        {
+            for (int i = 0; i < activeTerrains.Count; i++)
+            {
+                GameObject go = activeTerrains[i];
+                go.SetActive(true);
+                //activeTerrains.RemoveAt(i);
+            }
+        }
+        if (!player.GetComponent<Player>().isAlive)
+        {
+            for (int i = 0; i < activeTerrains.Count; i++)
+            {
+                GameObject go = activeTerrains[i];
+                go.SetActive(false);                
+            }
         }
 
         try
         {
-            if (playerTransform.position.z - safeZone > (spawnZ - maxSpawnedTerrains * terrainLenght) && playerTransform != null)
+            if (player.transform.position.z + terrainLenght > spawnZ && activeTerrains.Count >= 3)
             {
-                Spawnterrain();
+                DeactivateTerrain();
             }
         }
         catch (System.Exception)
@@ -57,19 +82,37 @@ public class TerrainManager : MonoBehaviour
 
     private void Spawnterrain()
     {
-        Vector3 moveVector = new Vector3(-500, 0, (1 * spawnZ));
+        Vector3 moveVector = new Vector3(-500, 0, (spawnZ));
         spawnZ += terrainLenght;
         GameObject go = ObjectPooler.SharedInstance.GetPooledObject("Terrain");
         go.transform.position = moveVector;
+        activeTerrains.Add(go);
         go.SetActive(true);
+    }
+
+    private void DeactivateTerrain()
+    {
+        GameObject go = activeTerrains[0];
+        go.SetActive(false);
+        activeTerrains.RemoveAt(0);
     }
 
     public void ResetAll()
     {
-        spawnZ = -1000.0f;
+        for (int i = 0; i < activeTerrains.Count; i++)
+        {
+            GameObject go = activeTerrains[i];
+            go.SetActive(false);
+            activeTerrains.Remove(go);
+        }
+        spawnZ = 0;
         terrainLenght = 1000;
         maxSpawnedTerrains = 3;
-        lastPrefabIndex = 0;
-        safeZone = 100;
+        activeTerrains = new List<GameObject>();
+    }
+
+    private void OnDisable()
+    {
+        ResetAll();
     }
 }

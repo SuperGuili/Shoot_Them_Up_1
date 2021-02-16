@@ -666,6 +666,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: lives
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6524935883154997819, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
         type: 3}
       propertyPath: m_Name
@@ -1591,6 +1596,8 @@ MonoBehaviour:
   _level: 0
   _lives: 0
   _highScore: 0
+  _isAlive: 0
+  gameIsOver: 0
 --- !u!4 &667607436
 Transform:
   m_ObjectHideFlags: 0
@@ -1856,7 +1863,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976087a262f82f94997b28ee477111ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: []
+  enemy:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   nextWave: 0
   difficulty: 0
   resetAll: 0
@@ -2596,7 +2613,7 @@ MonoBehaviour:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
+  m_CameraType: 1
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
@@ -4078,6 +4095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c0dcebc28069e4d9de2b457112b39c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeTerrains: []
 --- !u!4 &1916222712
 Transform:
   m_ObjectHideFlags: 0

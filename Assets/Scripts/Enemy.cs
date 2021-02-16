@@ -45,17 +45,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (hit != null)
-        //{
-        //    hit.transform.position = transform.position;
-        //}        
-
-        if (!playerTransform.GetComponent<Player>().isAlive)
+                //////////////////////////////////
+        if (!playerTransform.activeSelf && transform.position.z < playerTransform.transform.position.z + 50)
         {
             Die();
         }
 
-        if (playerTransform.transform.position.z - 100 > transform.position.z)
+        if (playerTransform.transform.position.z - 50 > transform.position.z)
         {
             Die();
         }
@@ -197,6 +193,10 @@ public class Enemy : MonoBehaviour
         }
         fireFx = null;
         corpse = true;
+        if (hit != null)
+        {
+            hit.SetActive(false);
+        }        
 
         audioEngine.Stop();
     }

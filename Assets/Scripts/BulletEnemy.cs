@@ -49,6 +49,18 @@ public class BulletEnemy : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+        try
+        {       //////////////////
+            if (!player.activeSelf && transform.position.z < player.transform.position.z + 100)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        catch (System.Exception)
+        {
+           
+        }
+
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {

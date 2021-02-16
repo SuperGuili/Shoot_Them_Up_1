@@ -35,6 +35,8 @@ public class Player : MonoBehaviour
     [SerializeField] public AudioClip gun;
     [SerializeField] public AudioClip impactSound;
     private float engineRPMSound = 1.0f;
+    private float prop = 500;
+
     AudioSource soundEngine;
     AudioSource soundGun;
     AudioSource soundImpact;
@@ -72,10 +74,10 @@ public class Player : MonoBehaviour
     {
         if (health >= 3)
         {
-            propeller.Rotate(0, 0, 1 * 1500 * Time.deltaTime);
+            propeller.Rotate(0, 0, 1 * 1000 * Time.deltaTime);
         }
 
-        if (health <= 2)
+        if (health <= 2 && health >= 1)
         {
             propeller.Rotate(0, 0, 1 * 500 * Time.deltaTime);
 
@@ -168,6 +170,10 @@ public class Player : MonoBehaviour
                 _rigidbody.constraints = RigidbodyConstraints.None;
                 _rigidbody.useGravity = true; // Gravity to fall
 
+                //slow the proppeler                
+                propeller.Rotate(0, 0, 1 * prop * Time.deltaTime);
+                prop -=  2 * Time.deltaTime;
+
                 if (transform.position.y <= 15) // Under water
                 {
                     lives--;
@@ -180,12 +186,6 @@ public class Player : MonoBehaviour
                 farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);
                 return;
             }
-        }
-
-        if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
-        {
-            nextFire = Time.time + fireRate;
-            Fire();
         }
 
         if (playerPosition.x > limitLeft && playerPosition.x < limitRight)
@@ -234,7 +234,14 @@ public class Player : MonoBehaviour
 
         //Control the cloud attached to the player
         farCloud.transform.rotation = Quaternion.Euler(0, 90.0f, 0.00f);
-        farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);        
+        farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);
+
+        //Waiting for input to fire the gun
+        if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Fire();
+        }
     }
     void Fire()
     {
@@ -261,6 +268,7 @@ public class Player : MonoBehaviour
     public void Die()
     {
         isAlive = false;
+        GameManager.Instance._isAlive = false;
         if (lives >= 1)
         {
             Reset();
@@ -275,6 +283,7 @@ public class Player : MonoBehaviour
         _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
 
         health = _health;
+
         nextFire = 0;
         firefxOn = true;
         fireFx.SetActive(false);
@@ -285,6 +294,9 @@ public class Player : MonoBehaviour
 
         engineRPMSound = 1.0f;
         soundEngine.pitch = engineRPMSound;
+        prop = 500;
+
+        GameManager.Instance._isAlive = true;
     }
     public void ResetAll()
     {
@@ -309,6 +321,9 @@ public class Player : MonoBehaviour
 
         engineRPMSound = 1.0f;
         soundEngine.pitch = engineRPMSound;
+        prop = 500;
+
+        GameManager.Instance._isAlive = true;
     }
     private void OnTriggerEnter(Collider other)
     {

@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     public int damage;
     public float movSpeed;
 
+    private GameObject player;
     private GameObject enemyTriggered;
     private Rigidbody bullet;
     private float playerSpeed;
@@ -20,7 +21,7 @@ public class Bullet : MonoBehaviour
     {
         try
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            player = GameObject.FindGameObjectWithTag("Player");
             if (player.activeInHierarchy && player != null)
             {
                 playerSpeed = player.GetComponent<Player>().speed;
@@ -54,6 +55,10 @@ public class Bullet : MonoBehaviour
         if (aliveTime <= 0)
         {
             aliveTime = 5;//_aliveTime;
+            gameObject.SetActive(false);
+        }
+        if (!player.activeInHierarchy)
+        {
             gameObject.SetActive(false);
         }
     }
