@@ -49,8 +49,14 @@ public class BulletEnemy : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+        if (hitPosition)
+        {
+            hit.transform.position = transform.position;
+            hitPosition = false;
+        }
+
         try
-        {       //////////////////
+        {       
             if (!player.activeSelf && transform.position.z < player.transform.position.z + 100)
             {
                 gameObject.SetActive(false);
@@ -90,6 +96,7 @@ public class BulletEnemy : MonoBehaviour
             scale = hit.transform.GetChild(i).GetComponent<ParticleSystem>();
             scale.transform.localScale /= 3f;
         }
+        hitPosition = true;
         hit.SetActive(true);
     }
 

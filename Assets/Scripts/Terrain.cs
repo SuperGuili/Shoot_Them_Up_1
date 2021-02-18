@@ -15,7 +15,11 @@ public class Terrain : MonoBehaviour
     {
 
     }
-    public void Delete()
+    private void OnTriggerEnter(Collider other)
+    {
+        
+    }
+        public void Delete()
     {
         gameObject.SetActive(false);
     }

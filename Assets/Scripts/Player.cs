@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     private GameObject bullet;
     public GameObject bulletSpawnLeft;
     public GameObject bulletSpawnRight;
+    public GameObject vfxSplash;
+    public GameObject vfxDustPuff;
+
     public float fireRate;
     public int health = 5;
     private int _health;
@@ -29,7 +32,6 @@ public class Player : MonoBehaviour
 
     private Vector3 dive;
     private bool diving = false;
-    private bool corpse = true;
 
     [SerializeField] public AudioClip engine;
     [SerializeField] public AudioClip gun;
@@ -44,6 +46,9 @@ public class Player : MonoBehaviour
 
     public string gameMode;
     public int _ammoQuantity;
+    private bool vfxSplashOn = false;
+    private bool vfxDustPuffOn = false;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -89,7 +94,7 @@ public class Player : MonoBehaviour
 
             if (engineRPMSound >= 0.5f)
             {
-                engineRPMSound -= 0.01f;// * Time.deltaTime;
+                engineRPMSound -= 0.01f;
                 soundEngine.pitch = engineRPMSound;
             }
         }
@@ -106,7 +111,7 @@ public class Player : MonoBehaviour
             // Position of the Fire FX
             moveFireFx = transform.position;
             moveFireFx.y -= 0.5f;
-            moveFireFx.z += 2.0f;
+            moveFireFx.z += 3.0f;
             fireFx.transform.position = moveFireFx;
         }
 
@@ -157,11 +162,15 @@ public class Player : MonoBehaviour
             }
             if (!diving)
             {
+                ///camera change
+                GameManager.Instance.cameraFPV.SetActive(false);
+                GameManager.Instance.cameraTop.SetActive(true);
+
                 float spin = Random.Range(-20f, 20f);
                 dive = new Vector3(spin, spin, 20);//x - turn right //y - spin clockwise //z - nose down
                 diving = true;
             }
-            if (transform.position.y > 10)
+            if (transform.position.y > 20)
             {
                 // Rotate down the player after death             
                 Quaternion deltaRotation = Quaternion.Euler(dive * Time.deltaTime);
@@ -181,18 +190,34 @@ public class Player : MonoBehaviour
                 propeller.Rotate(0, 0, 1 * prop * Time.deltaTime);
                 prop -= 2 * Time.deltaTime;
 
-                if (transform.position.y <= 15) // Under water
-                {
-                    lives--;
-                    GameManager.Instance._lives = lives;
-                    Die();
-                }
+            }            
 
-                //Control the cloud attached to the player
-                farCloud.transform.rotation = Quaternion.Euler(0, 90.0f, 0.00f);
-                farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);
-                return;
+            //Splash FX
+            if (transform.position.x > -20 && transform.position.y <= 19 && !vfxSplashOn)
+            {
+                GameObject.Instantiate(vfxSplash, transform.position, Quaternion.Euler(0, 0, 0));
+                fireFx.SetActive(false);
+                vfxSplashOn = true;
             }
+            if (transform.position.x < -20 && transform.position.y <= 30 && !vfxDustPuffOn)
+            {    
+                GameObject go = Instantiate(vfxDustPuff, transform.position, transform.rotation);
+                go.transform.SetParent(transform);
+                vfxDustPuffOn = true;
+            }
+
+            //Control the cloud attached to the player
+            farCloud.transform.rotation = Quaternion.Euler(0, 90.0f, 0.00f);
+            farCloud.transform.position = new Vector3(250, 100, playerPosition.z + 1000);
+
+            if (transform.position.y <= 12) // Under water
+            {
+                lives--;
+                GameManager.Instance._lives = lives;
+                Die();
+            }
+
+            return;
         }
 
         if (playerPosition.x > limitLeft && playerPosition.x < limitRight)
@@ -314,13 +339,18 @@ public class Player : MonoBehaviour
 
         dive = Vector3.zero;
         diving = false;
-        corpse = true;
 
         engineRPMSound = 1.0f;
         soundEngine.pitch = engineRPMSound;
         prop = 500;
 
         GameManager.Instance._isAlive = true;
+
+        vfxSplashOn = false;
+        vfxDustPuffOn = false;
+
+        GameManager.Instance.cameraFPV.SetActive(true);
+        GameManager.Instance.cameraTop.SetActive(false);
     }
     public void ResetAll()
     {
@@ -340,7 +370,7 @@ public class Player : MonoBehaviour
         _rigidbody.useGravity = false;
         dive = Vector3.zero;
         diving = false;
-        corpse = true;
+
         _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
 
         engineRPMSound = 1.0f;
@@ -351,11 +381,17 @@ public class Player : MonoBehaviour
 
         gameMode = GameManager.Instance.gameMode;
         _ammoQuantity = 1000;
+
+        vfxSplashOn = false;
+        vfxDustPuffOn = false;
+
+        GameManager.Instance.cameraFPV.SetActive(true);
+        GameManager.Instance.cameraTop.SetActive(false);
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Terrain")
-        {
+        {            
             lives--;
             GameManager.Instance._lives = lives;
             Die();

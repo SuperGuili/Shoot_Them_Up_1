@@ -46,7 +46,6 @@ public class TerrainManager : MonoBehaviour
             {
                 GameObject go = activeTerrains[i];
                 go.SetActive(false);
-                //activeTerrains.RemoveAt(i);
             }
         }
         if (player.activeInHierarchy)
@@ -55,7 +54,6 @@ public class TerrainManager : MonoBehaviour
             {
                 GameObject go = activeTerrains[i];
                 go.SetActive(true);
-                //activeTerrains.RemoveAt(i);
             }
         }
         if (!player.GetComponent<Player>().isAlive)
@@ -69,7 +67,7 @@ public class TerrainManager : MonoBehaviour
 
         try
         {
-            if (player.transform.position.z + terrainLenght > spawnZ && activeTerrains.Count >= 3)
+            if (player.transform.position.z + terrainLenght > spawnZ && activeTerrains.Count >= maxSpawnedTerrains)
             {
                 DeactivateTerrain();
             }

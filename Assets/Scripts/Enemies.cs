@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Enemies : MonoBehaviour
 {
-    public GameObject[] enemy;
     private GameObject player;
     private Vector3 spawnPosition;
 
-    private int wave = 1;
-    public float nextWave = 10;
+    private int wave = 10;
+    public float nextWave = 1;
     private float wavecounter = 0;
-    public float difficulty = 1;
-    public bool resetAll = false;
 
     private bool waveEnable = false;
     private float x = 0, y = 59.5f, z = 400; // Initial Spawn position
@@ -84,7 +81,6 @@ public class Enemies : MonoBehaviour
 
         for (int i = 0; i < wave; i++)
         {
-            //GameObject go = Instantiate(enemy[0]) as GameObject;
             GameObject go = ObjectPooler.SharedInstance.GetPooledObject("Enemy");
             if (i == 0) // ok -- center
             {
@@ -112,7 +108,6 @@ public class Enemies : MonoBehaviour
         wave = 1;
         nextWave = 10;
         wavecounter = 0;
-        difficulty = 1;
         waveEnable = false;
         x = 0; y = 59.5f; z = 400;
         enemyGap = 25;

@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
     private GameObject enemyTriggered;
     private Rigidbody bullet;
     private float playerSpeed;
-    private float _aliveTime = 5;
+    private float _aliveTime;
 
     public GameObject muzzle;
 
@@ -30,6 +30,7 @@ public class Bullet : MonoBehaviour
 
             bullet = GetComponent<Rigidbody>();
             bullet.velocity = transform.up * (movSpeed + playerSpeed);
+
             /// Muzzle Flash
             muzzle = ObjectPooler.SharedInstance.GetPooledObject("VfxFlash");
             muzzle.transform.SetParent(player.transform);
@@ -54,7 +55,7 @@ public class Bullet : MonoBehaviour
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
-            aliveTime = 5;//_aliveTime;
+            aliveTime = 5;
             gameObject.SetActive(false);
         }
         if (!player.activeInHierarchy)

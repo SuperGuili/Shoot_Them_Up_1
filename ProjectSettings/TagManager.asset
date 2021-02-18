@@ -22,6 +22,9 @@ TagManager:
   - VFX
   - VfxImpactEnemy
   - Steam
+  - Water
+  - VfxDust
+  - VfxSplash
   layers:
   - Default
   - TransparentFX

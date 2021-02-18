@@ -14,9 +14,6 @@ public class PlayerIntro : MonoBehaviour
     private float nextFire = 0.5f;
     public bool isAlive = true;
 
-    private int limitRight = 260;
-    private int limitLeft = -260;
-
     [SerializeField] public AudioClip engine;
     [SerializeField] public AudioClip gun;
     AudioSource soundEngine;
@@ -53,9 +50,6 @@ public class PlayerIntro : MonoBehaviour
     }
     private void FixedUpdate()
     {
-
-        float x = 0;
-        Vector3 playerPosition = transform.position;
         Vector3 moveVector = new Vector3(0, 0, 50);
 
         _rigidbody.AddForce(moveVector);
@@ -65,9 +59,6 @@ public class PlayerIntro : MonoBehaviour
         _rigidbody.MoveRotation(_rigidbody.rotation * deltaRotation);
 
         _rigidbody.AddForce(10, 0, 0); // Add force to turn right
-
-        //_rigidbody.constraints = RigidbodyConstraints.None;
-
 
 
         if (Time.time > nextFire)

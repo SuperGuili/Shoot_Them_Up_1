@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public Text newHighScoreText;
     public Text modeSelectedText;
     public Text gameModePlayText;
+    public Text HSHardMenuText;
 
     public Camera cameraTopCamera;
     public Camera cameraFPVCamera;
@@ -45,6 +46,7 @@ public class GameManager : MonoBehaviour
     public int _level;
     public int _lives;
     public int _highScore;
+    public int _highScoreHard;
     public bool _isAlive;
     public bool gameIsOver;
     public string gameMode;
@@ -139,7 +141,9 @@ public class GameManager : MonoBehaviour
                 panelOptions.SetActive(false);
                 //PlayerPrefs.SetInt("highscore", 0); //Reset the score
                 _highScore = PlayerPrefs.GetInt("highscore");
-                HSMenuText.text = "Highest Score: " + _highScore;
+                _highScoreHard = PlayerPrefs.GetInt("highScoreHard");
+                HSMenuText.text = "Highest Normal: " + _highScore;
+                HSHardMenuText.text = "Highest Hard: " + _highScoreHard;
                 Cursor.visible = true;
                 panelMenu.SetActive(true);
                 panelContinue.SetActive(false);
@@ -175,7 +179,15 @@ public class GameManager : MonoBehaviour
                 break;
 
             case State.LOADLEVEL:
-                highScoreText.text = "Highest Score: " + _highScore;
+                if (gameMode == "normal")
+                {
+                    highScoreText.text = "Highest Score: " + _highScore;
+                }
+                else if (gameMode == "hard")
+                {
+                    highScoreText.text = "Highest Score: " + _highScoreHard;
+                }
+
                 panelPlay.SetActive(true);
                 player.SetActive(true);
 
@@ -186,18 +198,37 @@ public class GameManager : MonoBehaviour
             case State.GAMEOVER:
                 gameIsOver = true;
                 _highScore = PlayerPrefs.GetInt("highscore");
+                _highScoreHard = PlayerPrefs.GetInt("highScoreHard");
                 Cursor.visible = true;
-                if (_score > _highScore)
+                if (gameMode == "normal")
                 {
-                    newHighScoreText.text = ("Congratulations, you have set a new Highest Score!!!");
-                    PlayerPrefs.SetInt("highscore", _score);
+                    if (_score > _highScore)
+                    {
+                        newHighScoreText.text = ("Congratulations, you have set a new Highest Score!!!");
+                        PlayerPrefs.SetInt("highscore", _score);
+                    }
+                    else if (_highScore > _score)
+                    {
+                        newHighScoreText.text = "";
+                    }
+                    gameOverHighText.text = "Highest Score: " + _highScore.ToString();
                 }
-                else if (_highScore > _score)
+
+                if (gameMode == "hard")
                 {
-                    newHighScoreText.text = "";
+                    if (_score > _highScoreHard)
+                    {
+                        newHighScoreText.text = ("Congratulations, you have set a new Highest Score!!!");
+                        PlayerPrefs.SetInt("highScoreHard", _score);
+                    }
+                    else if (_highScoreHard > _score)
+                    {
+                        newHighScoreText.text = "";
+                    }
+                    gameOverHighText.text = "Highest Score: " + _highScoreHard.ToString();
                 }
+
                 gameOverText.text = "Your Score: " + _score.ToString();
-                gameOverHighText.text = "Highest Score: " + _highScore.ToString();
                 panelGameOver.SetActive(true);
                 cameraFPV.SetActive(false);
                 cameraTop.SetActive(false);

@@ -68,9 +68,13 @@ MonoBehaviour:
   health: 4
   bullet: {fileID: 2944026804143311717, guid: 69fce5eba4b972b48b5805ab66beff29, type: 3}
   SpawnCenterEnemy: {fileID: 7243262629805493456}
+  vfxDustPuff: {fileID: 100000, guid: 99e12806af42ce54d9efc8ea23b69a7c, type: 3}
+  vfxSplash: {fileID: 6961743416443498378, guid: e2186ad6cc5ef774c9995d1beb9557ba,
+    type: 3}
   fireRate: 1
   burst: 3
   clipEngine: {fileID: 8300000, guid: f1fa78c409ee9704598f300b09f6117d, type: 3}
+  hit: {fileID: 0}
 --- !u!65 &7195450239006204199
 BoxCollider:
   m_ObjectHideFlags: 0

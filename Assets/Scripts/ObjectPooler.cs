@@ -36,7 +36,7 @@ public class ObjectPooler : MonoBehaviour
                     obj.transform.SetParent(Bullets);
                 }
                 if (obj.tag == "VfxImpact" || obj.tag == "VfxFlash" || obj.tag == "VfxMuzzle" || obj.tag == "VfxFirePlayer"
-                     || obj.tag == "VfxFire" || obj.tag == "VfxImpactEnemy")
+                     || obj.tag == "VfxFire" || obj.tag == "VfxImpactEnemy" || obj.tag == "VfxDust" || obj.tag == "VfxSplash")
                 {
                     Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
                     obj.transform.SetParent(VFX);

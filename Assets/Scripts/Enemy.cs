@@ -6,12 +6,13 @@ public class Enemy : MonoBehaviour
 {
     private Transform propeller;
     private GameObject player;
-    private Rigidbody rigidbody;
+    private Rigidbody rb;
 
     public float health;
 
     public GameObject bullet;
     public GameObject SpawnCenterEnemy;
+    public GameObject vfxDustPuff;
 
     public float fireRate = 1;
     public int burst = 3;
@@ -30,7 +31,7 @@ public class Enemy : MonoBehaviour
     {
         propeller = transform.Find("PropellerEnemy");
         player = GameObject.FindGameObjectWithTag("Player");
-        rigidbody = gameObject.GetComponent<Rigidbody>();
+        rb = gameObject.GetComponent<Rigidbody>();
         audioEngine = gameObject.GetComponent<AudioSource>();
         audioEngine.clip = clipEngine;
         audioEngine.Play(0);
@@ -45,7 +46,6 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //////////////////////////////////
         if (!player.activeSelf && transform.position.z < player.transform.position.z + 50)
         {
             Die();
@@ -76,20 +76,20 @@ public class Enemy : MonoBehaviour
                 dive = new Vector3(x, x, 20);//x - turn right //y - spin clockwise //z - nose down
                 diving = true;
             }
-            if (transform.position.y > 10)
+            if (transform.position.y > 20)
             {
                 // Rotate down the nemy after death             
                 Quaternion deltaRotation = Quaternion.Euler(dive * Time.deltaTime);
-                rigidbody.MoveRotation(rigidbody.rotation * deltaRotation);
+                rb.MoveRotation(rb.rotation * deltaRotation);
                 if (dive.x < 0.01f)
                 {
-                    rigidbody.AddForce(10, 0, 0); // Add force to turn right
+                    rb.AddForce(10, 0, 0); // Add force to turn right
                 }
                 else
                 {
-                    rigidbody.AddForce(-10, 0, 0); // Add force to turn left
+                    rb.AddForce(-10, 0, 0); // Add force to turn left
                 }
-                rigidbody.useGravity = true; // Gravity to fall
+                rb.useGravity = true; // Gravity to fall
 
                 // Fire FX
                 if (fireFx == null)
@@ -97,7 +97,7 @@ public class Enemy : MonoBehaviour
                     fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFire");
                     fireFx.SetActive(true);
                 }
-            }
+            }            
             return;
         }
 
@@ -131,7 +131,6 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-
         ResetAll();
         gameObject.SetActive(false);
     }
@@ -157,16 +156,27 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player")
         {
             player.GetComponent<Player>().health -= 2;
+            if (player != null)
+            {
+                HitFx();
+            }
             gameObject.SetActive(false);
         }
         if (other.tag == "Terrain")
         {
             corpse = false;
-            rigidbody.velocity = new Vector3(0, 0, 0);
-            rigidbody.angularVelocity = new Vector3(0, 0, 0);
-            rigidbody.useGravity = false;
-            if (transform.position.x > -20) // On the water - Flames off
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.angularVelocity = new Vector3(0, 0, 0);
+            rb.useGravity = false;
+            if (transform.position.x < -20) // on the ground, start smoke
             {
+                GameObject go = ObjectPooler.SharedInstance.GetPooledObject("VfxDust");
+                go.transform.position = transform.position;
+                go.transform.rotation = transform.rotation;
+                go.SetActive(true);
+            }
+            if (transform.position.x > -20) // On the water
+            {                
                 Die();
             }
         }
@@ -189,9 +199,9 @@ public class Enemy : MonoBehaviour
         nextFire = 0;
         diving = false;
 
-        rigidbody.useGravity = false;
-        rigidbody.velocity = new Vector3(0, 0, 0);
-        rigidbody.angularVelocity = new Vector3(0, 0, 0);
+        rb.useGravity = false;
+        rb.velocity = new Vector3(0, 0, 0);
+        rb.angularVelocity = new Vector3(0, 0, 0);
         transform.rotation = Quaternion.Euler(0, -90, 10);
         if (fireFx != null)
         {
@@ -222,5 +232,9 @@ public class Enemy : MonoBehaviour
                 //throw;
             }
         }
+    }
+    private void OnDisable()
+    {
+        audioEngine.Stop();
     }
 }
