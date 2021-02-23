@@ -56,15 +56,7 @@ public class TerrainManager : MonoBehaviour
                 go.SetActive(true);
             }
         }
-        if (!player.GetComponent<Player>().isAlive)
-        {
-            for (int i = 0; i < activeTerrains.Count; i++)
-            {
-                GameObject go = activeTerrains[i];
-                go.SetActive(false);                
-            }
-        }
-
+        
         try
         {
             if (player.transform.position.z + terrainLenght > spawnZ && activeTerrains.Count >= maxSpawnedTerrains)
@@ -111,6 +103,6 @@ public class TerrainManager : MonoBehaviour
 
     private void OnDisable()
     {
-        ResetAll();
+        //ResetAll();
     }
 }

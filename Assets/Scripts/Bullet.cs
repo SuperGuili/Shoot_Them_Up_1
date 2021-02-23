@@ -22,10 +22,6 @@ public class Bullet : MonoBehaviour
         try
         {
             player = GameObject.FindGameObjectWithTag("Player");
-            if (player.activeInHierarchy && player != null)
-            {
-                playerSpeed = player.GetComponent<Player>().speed;
-            }
             playerSpeed = player.GetComponent<Player>().speed;
 
             bullet = GetComponent<Rigidbody>();
@@ -52,14 +48,16 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        aliveTime -= 1 * Time.deltaTime;
-        if (aliveTime <= 0)
+        if (GameManager.Instance.gameIsOver)
         {
             aliveTime = 5;
             gameObject.SetActive(false);
         }
-        if (!player.activeInHierarchy)
+
+        aliveTime -= 1 * Time.deltaTime;
+        if (aliveTime <= 0)
         {
+            aliveTime = 5;
             gameObject.SetActive(false);
         }
     }

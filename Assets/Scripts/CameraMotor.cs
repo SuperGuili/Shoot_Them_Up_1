@@ -8,37 +8,47 @@ public class CameraMotor : MonoBehaviour
     private Vector3 startOffset;
     private Vector3 moveVector;
 
-    private float transition = 0.0f;
+    public float transition = 0.0f;
     private float animationDuration = 3.0f;
     private Vector3 animationOffset = new Vector3(0, 5, 5);
 
-    // Start is called before the first frame update
     void Start()
     {
-        lookAt = GameObject.FindGameObjectWithTag("Player").transform;
-        startOffset = transform.position - lookAt.position;
+        try
+        {
+            lookAt = GameObject.FindGameObjectWithTag("Player").transform;
+            startOffset = transform.position - lookAt.position;
+        }
+        catch (System.Exception)
+        {
+            //throw;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (lookAt == null)
+        {
+            Start();
             return;
-        moveVector = lookAt.position + startOffset;
-        //moveVector.x = 0;
-        moveVector.y = Mathf.Clamp(moveVector.y, 0, 65);
+        }
 
         if (transition > 1.0f)
         {
-            transform.Rotate(0, 0, 0);    //rotation = lookAt.rotation;
+            moveVector = lookAt.position + startOffset;
             transform.position = moveVector;
+            transform.LookAt(lookAt.position + new Vector3(0, 5, 0));           
         }
         else
         {
+            moveVector = lookAt.position + startOffset;
             //Camera animation at the start
             transform.position = Vector3.Lerp(moveVector + animationOffset, moveVector, transition);
             transition += Time.deltaTime * 1 / animationDuration;
             transform.LookAt(lookAt.position + new Vector3(0, 5, 0));
         }
+
+        //reset transition
     }
 }

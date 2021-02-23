@@ -6,20 +6,24 @@ public class VfxSplash : MonoBehaviour
 {
     public float aliveTime = 3;
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        
+        aliveTime = 3;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.gameIsOver)
+        {
+            aliveTime = -1;
+        }
+
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
-            /// Splash Vfx Deactivate and reset after use
             aliveTime = 3;
+            /// Splash Vfx Deactivate and reset after use            
             Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
             gameObject.transform.SetParent(VFX);
             gameObject.SetActive(false);

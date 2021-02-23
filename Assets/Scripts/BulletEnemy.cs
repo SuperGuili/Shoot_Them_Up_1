@@ -44,8 +44,9 @@ public class BulletEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player == null)
+        if (GameManager.Instance.gameIsOver)
         {
+            aliveTime = _aliveTime;
             gameObject.SetActive(false);
         }
 

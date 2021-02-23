@@ -278,7 +278,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6218436775525041179}
   - component: {fileID: 6218436775525041181}
-  - component: {fileID: 6218436775525041180}
   - component: {fileID: 6218436775525041182}
   - component: {fileID: 1339044682}
   m_Layer: 0
@@ -345,14 +344,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &6218436775525041180
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6218436775525041178}
-  m_Enabled: 1
 --- !u!114 &6218436775525041182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5892654662445111425
 Transform:
   m_ObjectHideFlags: 0
@@ -488,6 +479,8 @@ MonoBehaviour:
   engine: {fileID: 8300000, guid: f1fa78c409ee9704598f300b09f6117d, type: 3}
   gun: {fileID: 8300000, guid: 9725c6b5ac0fee54c8dd7cdfe9a22613, type: 3}
   impactSound: {fileID: 8300000, guid: 0d221ff57fe241441891e27b30a4de86, type: 3}
+  gameMode: 
+  _ammoQuantity: 0
 --- !u!1 &8825317694547919370
 GameObject:
   m_ObjectHideFlags: 0

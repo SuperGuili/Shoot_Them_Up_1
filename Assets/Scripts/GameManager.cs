@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject Bullets;
     public GameObject mainCamera;
 
+    public AudioListener _audioListener;
+
     public Text scoreText;
     public Text healthText;
     public Text livesText;
@@ -101,7 +103,6 @@ public class GameManager : MonoBehaviour
 
     public void QuitClicked()
     {
-        Debug.Log("quitClicked");
         Application.Quit();
     }
 
@@ -109,8 +110,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Instance = this;
-        cameraFPV.SetActive(false);
-        cameraTop.SetActive(false);
+        MainCamera();
+        _audioListener = cameraFPV.GetComponent<AudioListener>();        
         gameIsOver = false;
         gameMode = "normal";
         _ammoQuantity = 0;
@@ -147,21 +148,19 @@ public class GameManager : MonoBehaviour
                 Cursor.visible = true;
                 panelMenu.SetActive(true);
                 panelContinue.SetActive(false);
-                cameraFPV.SetActive(false);
-                cameraTop.SetActive(false);
                 player.SetActive(false);
                 break;
 
-            case State.INIT:
+            case State.INIT:                
                 gameIsOver = false;
                 _isAlive = true;
+                player.GetComponent<Player>().isAlive = _isAlive;
                 SwitchState(State.LOADLEVEL);
                 break;
 
             case State.PLAY:
 
-                mainCamera.SetActive(false);
-                cameraFPV.SetActive(true);
+                CameraFPV();
                 if (gameMode == "normal")
                 {
                     gameModePlayText.text = "Mode: " + gameMode.ToString();
@@ -190,6 +189,8 @@ public class GameManager : MonoBehaviour
 
                 panelPlay.SetActive(true);
                 player.SetActive(true);
+
+                cameraFPV.GetComponent<CameraMotor>().transition = 0.00f;
 
                 SwitchState(State.PLAY);
 
@@ -229,10 +230,8 @@ public class GameManager : MonoBehaviour
                 }
 
                 gameOverText.text = "Your Score: " + _score.ToString();
+                MainCamera();
                 panelGameOver.SetActive(true);
-                cameraFPV.SetActive(false);
-                cameraTop.SetActive(false);
-                mainCamera.SetActive(true);
                 enemies.GetComponent<Enemies>().ResetAll();
                 terrainManager.GetComponent<TerrainManager>().ResetAll();
                 player.GetComponent<Player>().ResetAll();
@@ -259,44 +258,37 @@ public class GameManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
                     Cursor.visible = false;
-                    player.GetComponent<Player>().isAlive = true;
+                    _isAlive = true;
+                    player.GetComponent<Player>().isAlive = _isAlive;
                     panelContinue.SetActive(false);
                     panelPlay.SetActive(true);
                     player.SetActive(true);
-
-                    cameraTop.SetActive(false);
-                    mainCamera.SetActive(false);
-                    cameraFPV.SetActive(true);
+                    CameraFPV();
 
                     Time.timeScale = 1;
                 }
 
-                if (!player.GetComponent<Player>().isAlive)
+                if (!_isAlive)
                 {
-                    if (_lives > 0)
+                    if (_lives >= 1)
                     {
-                        cameraFPV.SetActive(false);
-                        cameraTop.SetActive(false);
-                        mainCamera.SetActive(true);
+                        MainCamera();
                         Cursor.visible = true;
                         panelPlay.SetActive(false);
                         panelContinue.SetActive(true);
                         player.SetActive(false);
-
                         continueText.text = "Lifes Left: " + (_lives).ToString();
                         //pause
                         Time.timeScale = 0;
                     }
-                    else
-                    {
+                    else //if(_lives == 0)
+                    {                        
                         SwitchState(State.GAMEOVER);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    cameraFPV.SetActive(false);
-                    cameraTop.SetActive(false);
-                    mainCamera.SetActive(true);
+                    MainCamera();
                     Cursor.visible = true;
                     panelPlay.SetActive(false);
                     panelContinue.SetActive(true);
@@ -327,15 +319,12 @@ public class GameManager : MonoBehaviour
         {
             if (cameraFPVCamera.isActiveAndEnabled)
             {
-                cameraFPV.SetActive(false);
-                cameraTop.SetActive(true);
+                CameraTop();
             }
             else if (cameraTopCamera.isActiveAndEnabled)
             {
-                cameraFPV.SetActive(true);
-                cameraTop.SetActive(false);
+                CameraFPV();
             }
-
         }
 
         //// TEXT Updates
@@ -375,6 +364,7 @@ public class GameManager : MonoBehaviour
 
             case State.PLAY:
                 panelPlay.SetActive(false);
+                panelContinue.SetActive(false);
 
                 break;
 
@@ -387,11 +377,47 @@ public class GameManager : MonoBehaviour
 
             case State.GAMEOVER:
                 panelGameOver.SetActive(false);
-
+                gameIsOver = false;
                 break;
             default:
                 break;
         }
     }
 
+    public void MainCamera()
+    {
+        if (!cameraTop.activeSelf)
+        {
+            cameraTop.SetActive(true);
+        }
+        if (!cameraFPV.activeSelf)
+        {
+            cameraFPV.SetActive(true);
+        }
+        cameraFPVCamera.GetComponent<AudioListener>().enabled = false;
+        cameraTopCamera.enabled = false;
+        cameraFPVCamera.enabled = false;
+        mainCamera.SetActive(true);
+    }
+
+    public void CameraFPV()
+    {
+        mainCamera.SetActive(false);
+        cameraTopCamera.enabled = false;
+        cameraFPVCamera.enabled = true;
+        cameraFPVCamera.GetComponent<AudioListener>().enabled = true;
+        _audioListener.transform.SetParent(gameObject.transform);
+        _audioListener.transform.position = Vector3.zero;
+        _audioListener.transform.rotation = Quaternion.identity;
+
+    }
+    public void CameraTop()
+    {
+        mainCamera.SetActive(false);
+        cameraFPVCamera.enabled = false;
+        cameraTopCamera.enabled = true;
+        _audioListener.transform.SetParent(cameraTopCamera.transform);
+        _audioListener.transform.position = Vector3.zero;
+        _audioListener.transform.rotation = Quaternion.identity;
+    }
 }

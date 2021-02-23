@@ -952,31 +952,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+    - target: {fileID: 6218436775525041179, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
         type: 3}
-      propertyPath: lives
-      value: 3
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
-        type: 3}
-      propertyPath: vfxSplash
-      value: 
-      objectReference: {fileID: 6961743416443498378, guid: e2186ad6cc5ef774c9995d1beb9557ba,
-        type: 3}
-    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
-        type: 3}
-      propertyPath: vfxDustPuff
-      value: 
-      objectReference: {fileID: 100000, guid: 99e12806af42ce54d9efc8ea23b69a7c, type: 3}
     - target: {fileID: 6524935883154997819, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
         type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 6524935883154997819, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9374ecb45dfa634ba4f5ebbd401fddd, type: 3}
@@ -1873,6 +1857,7 @@ MonoBehaviour:
   cameraFPV: {fileID: 1420757691}
   Bullets: {fileID: 937960303}
   mainCamera: {fileID: 1082627482}
+  _audioListener: {fileID: 0}
   scoreText: {fileID: 891761045}
   healthText: {fileID: 846268190}
   livesText: {fileID: 1502815721}
@@ -1913,7 +1898,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 667607434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.332947, y: 19.468674, z: 408.375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3990,7 +3975,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1420757692
 MonoBehaviour:
   m_ObjectHideFlags: 0

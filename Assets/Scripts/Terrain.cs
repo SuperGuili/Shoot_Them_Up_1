@@ -13,7 +13,10 @@ public class Terrain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameManager.Instance.gameIsOver)
+        {
+            Delete();
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -21,6 +24,7 @@ public class Terrain : MonoBehaviour
     }
         public void Delete()
     {
+
         gameObject.SetActive(false);
     }
 

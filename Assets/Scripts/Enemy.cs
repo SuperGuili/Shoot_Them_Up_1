@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
 
     public GameObject bullet;
     public GameObject SpawnCenterEnemy;
-    public GameObject vfxDustPuff;
+    public GameObject vfxDustPuff = null;
 
     public float fireRate = 1;
     public int burst = 3;
@@ -46,6 +46,10 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.gameIsOver)
+        {
+            Die();
+        }
         if (!player.activeSelf && transform.position.z < player.transform.position.z + 50)
         {
             Die();
@@ -168,12 +172,12 @@ public class Enemy : MonoBehaviour
             rb.velocity = new Vector3(0, 0, 0);
             rb.angularVelocity = new Vector3(0, 0, 0);
             rb.useGravity = false;
-            if (transform.position.x < -20) // on the ground, start smoke
+            if (transform.position.x <= -20) // on the ground, start smoke
             {
-                GameObject go = ObjectPooler.SharedInstance.GetPooledObject("VfxDust");
-                go.transform.position = transform.position;
-                go.transform.rotation = transform.rotation;
-                go.SetActive(true);
+                vfxDustPuff = ObjectPooler.SharedInstance.GetPooledObject("VfxDust");                
+                vfxDustPuff.transform.position = transform.position;
+                vfxDustPuff.transform.rotation = other.transform.rotation;               
+                vfxDustPuff.SetActive(true);                
             }
             if (transform.position.x > -20) // On the water
             {                
@@ -215,6 +219,12 @@ public class Enemy : MonoBehaviour
         }
 
         audioEngine.Stop();
+
+        if (vfxDustPuff)
+        {
+            vfxDustPuff.SetActive(false);
+        }
+        vfxDustPuff = null;
     }
     private void HitFx()
     {

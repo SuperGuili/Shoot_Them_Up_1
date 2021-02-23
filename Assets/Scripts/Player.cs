@@ -10,14 +10,14 @@ public class Player : MonoBehaviour
     private GameObject bullet;
     public GameObject bulletSpawnLeft;
     public GameObject bulletSpawnRight;
-    public GameObject vfxSplash;
-    public GameObject vfxDustPuff;
+    private GameObject vfxSplash;
+    private GameObject vfxDustPuff;
 
     public float fireRate;
-    public int health = 5;
+    public int health = 10;
     private int _health;
     private float nextFire = 0;
-    public bool isAlive = true;
+    public bool isAlive = false;
     public int lives = 3;
     public int score = 0;
     private int scoreUpdater = 0;
@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     private int limitLeft = -260;
 
     private GameObject fireFx;
-    private bool firefxOn = true;
+    private bool firefxOn = false;
     private Vector3 moveFireFx;
 
     private Vector3 dive;
@@ -99,14 +99,14 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (health <= 2 && firefxOn)
+        if (health <= 2 && !firefxOn)
         {
             fireFx = ObjectPooler.SharedInstance.GetPooledObject("VfxFirePlayer");
             fireFx.SetActive(true);
-            firefxOn = false;
+            firefxOn = true;
         }
 
-        if (!firefxOn)
+        if (firefxOn)
         {
             // Position of the Fire FX
             moveFireFx = transform.position;
@@ -163,8 +163,7 @@ public class Player : MonoBehaviour
             if (!diving)
             {
                 ///camera change
-                GameManager.Instance.cameraFPV.SetActive(false);
-                GameManager.Instance.cameraTop.SetActive(true);
+                GameManager.Instance.CameraTop();
 
                 float spin = Random.Range(-20f, 20f);
                 dive = new Vector3(spin, spin, 20);//x - turn right //y - spin clockwise //z - nose down
@@ -172,9 +171,8 @@ public class Player : MonoBehaviour
             }
             if (transform.position.y > 20)
             {
-                // Rotate down the player after death             
-                Quaternion deltaRotation = Quaternion.Euler(dive * Time.deltaTime);
-                _rigidbody.MoveRotation(_rigidbody.rotation * deltaRotation);
+                // Rotate the player down after death                
+                _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(dive * Time.deltaTime));
                 if (dive.x < 0.01f)
                 {
                     _rigidbody.AddForce(-10, 0, 0); // Add force to turn left
@@ -193,16 +191,20 @@ public class Player : MonoBehaviour
             }            
 
             //Splash FX
-            if (transform.position.x > -20 && transform.position.y <= 19 && !vfxSplashOn)
+            if (transform.position.x > -20 && transform.position.y <= 20 && !vfxSplashOn)
             {
-                GameObject.Instantiate(vfxSplash, transform.position, Quaternion.Euler(0, 0, 0));
+                vfxSplash = ObjectPooler.SharedInstance.GetPooledObject("VfxSplash");
+                vfxSplash.transform.position = transform.position;
                 fireFx.SetActive(false);
+                vfxSplash.SetActive(true);
                 vfxSplashOn = true;
             }
-            if (transform.position.x < -20 && transform.position.y <= 30 && !vfxDustPuffOn)
+            if (transform.position.y <= 40 && !vfxDustPuffOn) 
             {    
-                GameObject go = Instantiate(vfxDustPuff, transform.position, transform.rotation);
-                go.transform.SetParent(transform);
+                vfxDustPuff = ObjectPooler.SharedInstance.GetPooledObject("VfxDust");
+                vfxDustPuff.transform.position = transform.position;
+                vfxDustPuff.transform.SetParent(transform);
+                vfxDustPuff.SetActive(true);
                 vfxDustPuffOn = true;
             }
 
@@ -212,8 +214,6 @@ public class Player : MonoBehaviour
 
             if (transform.position.y <= 12) // Under water
             {
-                lives--;
-                GameManager.Instance._lives = lives;
                 Die();
             }
 
@@ -276,14 +276,10 @@ public class Player : MonoBehaviour
             {
                 Fire();
             }
-            else if (gameMode == "hard" && _ammoQuantity > 0)
+            if (gameMode == "hard" && _ammoQuantity > 0)
             {
                 Fire();
                 GameManager.Instance._ammoQuantity = _ammoQuantity;
-            }
-            else
-            {
-
             }
         }
     }
@@ -317,11 +313,14 @@ public class Player : MonoBehaviour
     public void Die()
     {
         isAlive = false;
-        GameManager.Instance._isAlive = false;
+        GameManager.Instance._isAlive = isAlive;
         if (lives >= 1)
         {
+            lives--;
+            GameManager.Instance._lives = lives;
             Reset();
         }
+
     }
     public void Reset()
     {
@@ -334,7 +333,7 @@ public class Player : MonoBehaviour
         health = _health;
 
         nextFire = 0;
-        firefxOn = true;
+        firefxOn = false;
         fireFx.SetActive(false);
 
         dive = Vector3.zero;
@@ -344,26 +343,26 @@ public class Player : MonoBehaviour
         soundEngine.pitch = engineRPMSound;
         prop = 500;
 
-        GameManager.Instance._isAlive = true;
-
         vfxSplashOn = false;
         vfxDustPuffOn = false;
-
-        GameManager.Instance.cameraFPV.SetActive(true);
-        GameManager.Instance.cameraTop.SetActive(false);
+        if (vfxDustPuff != null)
+        {
+            Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
+            vfxDustPuff.transform.SetParent(VFX);
+            vfxDustPuff.SetActive(false);
+        }
     }
     public void ResetAll()
     {
         fireFx.SetActive(false);
-        firefxOn = true;
+        firefxOn = false;
         health = _health;
         nextFire = 0;
         fireRate = 0.3f;
-        isAlive = true;
         lives = 3;
         score = 0;
         scoreUpdater = 0;
-        level = 0;
+        level = 1;
         transform.position = new Vector3(0, 60, 0);
         _rigidbody.angularVelocity = new Vector3(0, 0, 0);
         transform.rotation = Quaternion.Euler(0, 90, 10);
@@ -377,23 +376,23 @@ public class Player : MonoBehaviour
         soundEngine.pitch = engineRPMSound;
         prop = 500;
 
-        GameManager.Instance._isAlive = true;
-
         gameMode = GameManager.Instance.gameMode;
         _ammoQuantity = 1000;
 
         vfxSplashOn = false;
         vfxDustPuffOn = false;
 
-        GameManager.Instance.cameraFPV.SetActive(true);
-        GameManager.Instance.cameraTop.SetActive(false);
+        if (vfxDustPuff != null)
+        {
+            Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
+            vfxDustPuff.transform.SetParent(VFX);
+            vfxDustPuff.SetActive(false);
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Terrain")
         {            
-            lives--;
-            GameManager.Instance._lives = lives;
             Die();
         }
 
@@ -404,6 +403,6 @@ public class Player : MonoBehaviour
     }
     private void OnDisable()
     {
-        soundEngine.Stop();
+        soundEngine.Stop();        
     }
 }

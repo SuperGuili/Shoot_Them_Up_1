@@ -23,6 +23,5 @@ public class CameraTop : MonoBehaviour
         
         transform.position = moveVector;
         transform.LookAt(lookAt.position + new Vector3(0, 0, 80));//move the camera
-        //transform.Rotate(0, 0, 0);
     }
 }
