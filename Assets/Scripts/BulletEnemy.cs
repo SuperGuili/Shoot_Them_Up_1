@@ -34,6 +34,7 @@ public class BulletEnemy : MonoBehaviour
         soundFx = true;
         hitPosition = false;
         audioSource = GetComponent<AudioSource>();
+        gameObject.GetComponentInChildren<TrailRenderer>().Clear();
     }
 
     void Start()

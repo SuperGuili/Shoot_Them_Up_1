@@ -32,6 +32,8 @@ public class Bullet : MonoBehaviour
             muzzle.transform.SetParent(player.transform);
             muzzle.transform.position = gameObject.transform.position;
             muzzle.SetActive(true);
+
+            gameObject.GetComponentInChildren<TrailRenderer>().Clear();
         }
         catch (System.Exception)
         {
@@ -68,7 +70,7 @@ public class Bullet : MonoBehaviour
         {          
             enemyTriggered = other.gameObject;
             Enemy _enemy = enemyTriggered.GetComponent<Enemy>();
-            _enemy.RemoveHealth(damage);
+            _enemy.RemoveHealth(damage);            
             gameObject.SetActive(false);            
         }
     }
