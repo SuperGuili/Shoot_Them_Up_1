@@ -33,9 +33,9 @@ public class Player : MonoBehaviour
     private Vector3 dive;
     private bool diving = false;
 
-    [SerializeField] public AudioClip engine;
-    [SerializeField] public AudioClip gun;
-    [SerializeField] public AudioClip impactSound;
+    public AudioClip engine;
+    public AudioClip gun;
+    public AudioClip impactSound;
     private float engineRPMSound = 1.0f;
     private float prop = 500;
 
@@ -199,6 +199,7 @@ public class Player : MonoBehaviour
                 vfxSplash.SetActive(true);
                 vfxSplashOn = true;
             }
+            // Smoke FX
             if (transform.position.y <= 40 && !vfxDustPuffOn) 
             {    
                 vfxDustPuff = ObjectPooler.SharedInstance.GetPooledObject("VfxDust");
@@ -227,19 +228,19 @@ public class Player : MonoBehaviour
         else if (playerPosition.x >= limitRight)
         {
             moveVector.x = playerPosition.x - 5;
-            transform.position = new Vector3(moveVector.x, 60, playerPosition.z + 1);
+            transform.position = new Vector3(moveVector.x, 0, playerPosition.z + 1);
             _rigidbody.AddForce(-1, 0, 0);
             return;
         }
         else if (playerPosition.x <= limitLeft)
         {
             moveVector.x = playerPosition.x + 5;
-            transform.position = new Vector3(moveVector.x, 60, playerPosition.z + 1);
+            transform.position = new Vector3(moveVector.x, 0, playerPosition.z + 1);
             _rigidbody.AddForce(1, 0, 0);
             return;
         }
 
-        moveVector = new Vector3(x * speed * turnSpeed, 60, speed);
+        moveVector = new Vector3(x * speed * turnSpeed, 0, speed);
 
         _rigidbody.AddForce(moveVector);
 

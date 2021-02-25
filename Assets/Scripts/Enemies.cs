@@ -7,17 +7,19 @@ public class Enemies : MonoBehaviour
     private GameObject player;
     private Vector3 spawnPosition;
 
-    private int wave = 10;
-    public float nextWave = 1;
-    private float wavecounter = 0;
+    private int wave = 1; // Number of enemies per wave
+    public float nextWave = 10; // Seconds to next wave of enemies
+    private float wavecounter = 0; // counts the seconds
 
-    private bool waveEnable = false;
+    private bool waveEnable = false; // enables the wave to call spawnenemies();
     private float x = 0, y = 59.5f, z = 400; // Initial Spawn position
-    private int enemyGap = 25;
+    private int enemyGap = 25; // gap of the V formation
+    private string position = "center"; // Initial position of enemy in the formation
 
     private void OnEnable()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        //position = "center";
     }
 
     // Start is called before the first frame update    
@@ -27,12 +29,14 @@ public class Enemies : MonoBehaviour
     }
     void Update()
     {
+        //Get the player in case its null
         if (player == null)
         {
             OnEnable();
             return;
         }
 
+        //Check if the player is alive before spawning enemies
         if (player.gameObject.activeInHierarchy)
         {
             if (waveEnable == true)
@@ -53,7 +57,8 @@ public class Enemies : MonoBehaviour
             }
         }
     }
-    private string position = "center";
+
+    // Function to spawn enemies
     private void SpawnEnemies()
     {
         //Left or right wave position
@@ -79,22 +84,23 @@ public class Enemies : MonoBehaviour
         z = (int)player.transform.position.z + 500;
         spawnPosition = new Vector3(x, y, z);
 
+        //Loop to spawn in V formation
         for (int i = 0; i < wave; i++)
         {
             GameObject go = ObjectPooler.SharedInstance.GetPooledObject("Enemy");
-            if (i == 0) // ok -- center
+            if (i == 0) // center - first enemy
             {
                 go.transform.position = spawnPosition;
                 go.SetActive(true);
             }
-            else if (i % 2 == 1) // Odd -- ok
+            else if (i % 2 == 1) // Odd 
             {
                 spawnPosition.x -= enemyGap * i; // set the gap for v formation
                 spawnPosition.z += 30;
                 go.transform.position = spawnPosition;
                 go.SetActive(true);
             }
-            else if (i % 2 == 0) // Even -- ok
+            else if (i % 2 == 0) // Even 
             {
                 spawnPosition.x += enemyGap * i; // set the gap for v formation
                 go.transform.position = spawnPosition;
@@ -103,6 +109,7 @@ public class Enemies : MonoBehaviour
         }
     }
 
+    // Function to reset the values when the game is over
     public void ResetAll()
     {
         wave = 1;
@@ -111,5 +118,6 @@ public class Enemies : MonoBehaviour
         waveEnable = false;
         x = 0; y = 59.5f; z = 400;
         enemyGap = 25;
+        position = "center";
     }
 }
