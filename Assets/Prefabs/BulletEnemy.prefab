@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbe6408783e4cb643b4203de3cf0e3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aliveTime: 15
+  aliveTime: 10
   damage: 1
   movSpeed: 50
   hit: {fileID: 0}

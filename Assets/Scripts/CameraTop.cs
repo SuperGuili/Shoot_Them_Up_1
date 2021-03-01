@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CameraTop : MonoBehaviour
 {
-    private Transform lookAt;
-    private Vector3 moveVector;
+    private Transform lookAt; // player position
+    private Vector3 moveVector; // used to store position
 
     // Start is called before the first frame update
     void Start()

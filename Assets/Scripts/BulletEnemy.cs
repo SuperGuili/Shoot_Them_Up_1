@@ -4,37 +4,32 @@ using UnityEngine;
 
 public class BulletEnemy : MonoBehaviour
 {
-    public float aliveTime = 10;
-    public int damage;
-    public float movSpeed;
+    public float aliveTime = 10; // used to count and disable the bullet object
+    public int damage = 1; // Bullet damage
+    public float movSpeed = 50; // velocity of bullet
 
-    private GameObject enemyTriggered;
-    GameObject player;
-    private Rigidbody bullet;
-    private float playerSpeed;
-    private float _aliveTime = 10;
+    private GameObject playerTriggered; // player object for collision
+    private GameObject player; // player object
+    private Rigidbody bullet; // bullet rigidbody
 
-    public GameObject hit = null;
-    private bool soundFx = true;
-    private bool hitPosition = false;
+    public GameObject hit = null; // hit fx
+    private bool soundFx = true; // hit sound fx checker
+    private bool hitPosition = false; // used to check collision position
 
-    private AudioSource audioSource;
+    private AudioSource audioSource; //
 
     // Start is called before the first frame update
     private void OnEnable()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerSpeed = player.GetComponent<Player>().speed;
-        }
+        player = GameObject.FindGameObjectWithTag("Player");        
         bullet = GetComponent<Rigidbody>();
-        bullet.velocity = transform.up * (movSpeed + playerSpeed);
+        bullet.velocity = transform.up * (movSpeed);
         bullet.transform.rotation = Quaternion.Euler(0, 0, 0);
         soundFx = true;
         hitPosition = false;
         audioSource = GetComponent<AudioSource>();
         gameObject.GetComponentInChildren<TrailRenderer>().Clear();
+        aliveTime = 10;
     }
 
     void Start()
@@ -47,7 +42,6 @@ public class BulletEnemy : MonoBehaviour
     {
         if (GameManager.Instance.gameIsOver)
         {
-            aliveTime = _aliveTime;
             gameObject.SetActive(false);
         }
 
@@ -72,7 +66,6 @@ public class BulletEnemy : MonoBehaviour
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
-            aliveTime = _aliveTime;
             gameObject.SetActive(false);
         }
 
@@ -92,24 +85,17 @@ public class BulletEnemy : MonoBehaviour
         hit.transform.SetParent(player.transform);
         hit.transform.position = transform.position;
         hit.transform.rotation = transform.rotation;
-        ParticleSystem scale;
-        for (int i = 0; i < 3; i++)
-        {
-            scale = hit.transform.GetChild(i).GetComponent<ParticleSystem>();
-            scale.transform.localScale /= 3f;
-        }
         hitPosition = true;
         hit.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.CompareTag("Player"))
         {
             HitFx();
-            enemyTriggered = other.gameObject;
-            Player _player = enemyTriggered.GetComponent<Player>();
-            _player.RemoveHealth(damage);
+            playerTriggered = other.gameObject;
+            playerTriggered.GetComponent<Player>().RemoveHealth(damage);
             gameObject.SetActive(false);
         }
     }

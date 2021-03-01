@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class Enemies : MonoBehaviour
 {
-    private GameObject player;
-    private Vector3 spawnPosition;
+    private GameObject player; // GameObject Player
+    private Vector3 spawnPosition; // Position to spawn enemy
 
-    private int wave = 1; // Number of enemies per wave
+    public int wave = 1; // Number of enemies per wave
     public float nextWave = 10; // Seconds to next wave of enemies
     private float wavecounter = 0; // counts the seconds
+    public float timer = 10; // used to count time between waves
 
     private bool waveEnable = false; // enables the wave to call spawnenemies();
     private float x = 0, y = 59.5f, z = 400; // Initial Spawn position
     private int enemyGap = 25; // gap of the V formation
-    private string position = "center"; // Initial position of enemy in the formation
+    private string position = "center"; // Initial position of enemy in the V formation
 
     private void OnEnable()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        //position = "center";
     }
 
     // Start is called before the first frame update    
@@ -41,8 +41,12 @@ public class Enemies : MonoBehaviour
         {
             if (waveEnable == true)
             {
+                if (wave > 11)
+                {
+                    wave = 11;
+                }
                 SpawnEnemies();
-                if (wave < 10)
+                if (wave < 3)
                 {
                     wave++;
                 }
@@ -52,16 +56,16 @@ public class Enemies : MonoBehaviour
             wavecounter += Time.deltaTime;
             if (wavecounter > nextWave)
             {
-                nextWave += 10;
+                nextWave += timer;
                 waveEnable = true;
             }
         }
     }
 
-    // Function to spawn enemies
+    // Method to spawn enemies
     private void SpawnEnemies()
     {
-        //Left or right wave position
+        // center, Left or right wave position
         switch (position)
         {
             case "center":
@@ -109,15 +113,25 @@ public class Enemies : MonoBehaviour
         }
     }
 
-    // Function to reset the values when the game is over
+    // Method to reset the values when the game is over
     public void ResetAll()
     {
         wave = 1;
         nextWave = 10;
         wavecounter = 0;
+        timer = 10;
         waveEnable = false;
         x = 0; y = 59.5f; z = 400;
         enemyGap = 25;
         position = "center";
+    }
+
+    //Method to shorten the time for next wave
+    public void NextWave(int waveTimer)
+    {
+        if (timer > 4)
+        {
+            timer += waveTimer;
+        }
     }
 }

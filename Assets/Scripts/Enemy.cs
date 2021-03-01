@@ -159,7 +159,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            player.GetComponent<Player>().health -= 2;
+            player.GetComponent<Player>().RemoveHealth(2);            
             if (player != null)
             {
                 HitFx();

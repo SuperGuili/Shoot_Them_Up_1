@@ -952,6 +952,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: lives
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: speed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: _health
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: isAlive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218436773887226942, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
+        type: 3}
+      propertyPath: fireRate
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6218436775525041179, guid: e9374ecb45dfa634ba4f5ebbd401fddd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2369,7 +2394,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976087a262f82f94997b28ee477111ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wave: 1
   nextWave: 1
+  timer: 10
 --- !u!1 &846268187
 GameObject:
   m_ObjectHideFlags: 0
@@ -3988,6 +4015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b420be1dbf8afdb408d8b54c6dd64551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transition: 0
 --- !u!81 &1420757693
 AudioListener:
   m_ObjectHideFlags: 0

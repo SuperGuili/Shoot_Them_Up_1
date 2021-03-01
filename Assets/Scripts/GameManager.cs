@@ -114,7 +114,6 @@ public class GameManager : MonoBehaviour
         _audioListener = cameraFPV.GetComponent<AudioListener>();        
         gameIsOver = false;
         gameMode = "normal";
-        _ammoQuantity = 0;
         SwitchState(State.MENU);
     }
 
@@ -137,9 +136,7 @@ public class GameManager : MonoBehaviour
     {
         switch (newState)
         {
-            case State.MENU:
-                panelControls.SetActive(false);
-                panelOptions.SetActive(false);
+            case State.MENU:                
                 //PlayerPrefs.SetInt("highscore", 0); //Reset the score
                 _highScore = PlayerPrefs.GetInt("highscore");
                 _highScoreHard = PlayerPrefs.GetInt("highScoreHard");
@@ -149,6 +146,8 @@ public class GameManager : MonoBehaviour
                 panelMenu.SetActive(true);
                 panelContinue.SetActive(false);
                 player.SetActive(false);
+                panelControls.SetActive(false);
+                panelOptions.SetActive(false);
                 break;
 
             case State.INIT:                
@@ -191,6 +190,7 @@ public class GameManager : MonoBehaviour
                 player.SetActive(true);
 
                 cameraFPV.GetComponent<CameraMotor>().transition = 0.00f;
+                Cursor.visible = false;
 
                 SwitchState(State.PLAY);
 

@@ -1,35 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float aliveTime;
-    public int damage;
-    public float movSpeed;
+    public float aliveTime; // used to count and disable the bullet object
+    public int damage; // Bullet damage 
+    public float movSpeed; // velocity of bullet
 
-    private GameObject player;
-    private GameObject enemyTriggered;
-    private Rigidbody bullet;
-    private float playerSpeed;
-    private float _aliveTime;
+    private Transform playerTransform; // player object
+    private GameObject enemyTriggered; // enemy object
+    private Rigidbody bullet; // bullet rigidbody
+    private float playerSpeed; // get the player speed
 
-    public GameObject muzzle;
+    public GameObject muzzle; // Muzzle flash object
 
     // Start is called before the first frame update
     private void OnEnable()
     {
         try
         {
-            player = GameObject.FindGameObjectWithTag("Player");
-            playerSpeed = player.GetComponent<Player>().speed;
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+            playerSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().speed;
 
             bullet = GetComponent<Rigidbody>();
             bullet.velocity = transform.up * (movSpeed + playerSpeed);
 
             /// Muzzle Flash
             muzzle = ObjectPooler.SharedInstance.GetPooledObject("VfxFlash");
-            muzzle.transform.SetParent(player.transform);
+            muzzle.transform.SetParent(playerTransform);
             muzzle.transform.position = gameObject.transform.position;
             muzzle.SetActive(true);            
         }
@@ -37,8 +34,8 @@ public class Bullet : MonoBehaviour
         {
             //throw;
         }
-        gameObject.GetComponentInChildren<TrailRenderer>().Clear();
-        _aliveTime = 5;
+        gameObject.GetComponentInChildren<TrailRenderer>().Clear(); // clear the bullet trail fx
+        aliveTime = 5;
     }
 
     void Start()
@@ -51,25 +48,22 @@ public class Bullet : MonoBehaviour
     {
         if (GameManager.Instance.gameIsOver)
         {
-            aliveTime = 5;
             gameObject.SetActive(false);
         }
 
         aliveTime -= 1 * Time.deltaTime;
         if (aliveTime <= 0)
         {
-            aliveTime = 5;
             gameObject.SetActive(false);
         }
     }
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Enemy")
+        if (other.CompareTag("Enemy"))
         {          
             enemyTriggered = other.gameObject;
-            Enemy _enemy = enemyTriggered.GetComponent<Enemy>();
-            _enemy.RemoveHealth(damage);
+            enemyTriggered.GetComponent<Enemy>().RemoveHealth(damage);
             gameObject.SetActive(false);            
         }
     }

@@ -7,7 +7,7 @@ public class TerrainManager : MonoBehaviour
     private GameObject player;
     private float spawnZ = 0;
     private float terrainLenght = 1000;
-    private int maxSpawnedTerrains = 3;
+    private int maxSpawnedTerrains = 4;
 
     public List<GameObject> activeTerrains;
 

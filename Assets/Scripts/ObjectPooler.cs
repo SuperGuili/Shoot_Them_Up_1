@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -30,23 +29,24 @@ public class ObjectPooler : MonoBehaviour
             for (int i = 0; i < item.amountToPool; i++)
             {
                 GameObject obj = (GameObject)Instantiate(item.objectToPool);
-                if (obj.tag == "VfxBullet" || obj.tag == "BulletEnemy")
+                if (obj.CompareTag("VfxBullet") || obj.CompareTag("BulletEnemy"))
                 {
                     Transform Bullets = GameObject.FindGameObjectWithTag("Bullets").transform;
                     obj.transform.SetParent(Bullets);
                 }
-                if (obj.tag == "VfxImpact" || obj.tag == "VfxFlash" || obj.tag == "VfxMuzzle" || obj.tag == "VfxFirePlayer"
-                     || obj.tag == "VfxFire" || obj.tag == "VfxImpactEnemy" || obj.tag == "VfxDust" || obj.tag == "VfxSplash")
+                if (obj.CompareTag("VfxImpact") || obj.CompareTag("VfxFlash") || obj.CompareTag("VfxFirePlayer")
+                    || obj.CompareTag("VfxFire") || obj.CompareTag("VfxImpactEnemy") || obj.CompareTag("VfxDust")
+                    || obj.CompareTag("VfxSplash"))
                 {
                     Transform VFX = GameObject.FindGameObjectWithTag("VFX").transform;
                     obj.transform.SetParent(VFX);
                 }
-                if (obj.tag == "Terrain")
+                if (obj.CompareTag("Terrain"))
                 {
                     Transform TerrainManager = GameObject.FindGameObjectWithTag("TerrainManager").transform;
                     obj.transform.SetParent(TerrainManager);
                 }
-                if (obj.tag == "Enemy")
+                if (obj.CompareTag("Enemy"))
                 {
                     Transform Enemies = GameObject.FindGameObjectWithTag("Enemies").transform;
                     obj.transform.SetParent(Enemies);
@@ -75,7 +75,7 @@ public class ObjectPooler : MonoBehaviour
         }
         foreach (ObjectPoolItem item in itemsToPool)
         {
-            if (item.objectToPool.tag == tag)
+            if (item.objectToPool.CompareTag(tag))
             {
                 if (item.shouldExpand)
                 {
